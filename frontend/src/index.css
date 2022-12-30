@@ -1,0 +1,81 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  font-family: "Roboto", sans-serif;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+p {
+  margin: 0.5rem 0 0.5rem 0;
+}
+
+body {
+  line-height: 1.5;
+}
+
+body,
+#root {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.app {
+  margin-top: 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  width: 100%;
+  align-items: center;
+}
+
+.box-component {
+  border: 1px solid grey;
+  width: 100%;
+  max-width: 40rem;
+}
+
+.box-component .title {
+  border-bottom: 1px solid grey;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+}
+
+.box-component .body {
+  padding: 1rem;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  max-width: 25rem;
+  gap: 1rem;
+  align-items: center;
+  margin: 0 auto;
+}
+
+.user-navbar {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 1rem;
+}
+
+.current-weather .main-box {
+  display: grid;
+  grid-template-columns: auto auto;
+}

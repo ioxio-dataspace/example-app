@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "example-app"
+version = "0.1.0"
+description = "Example dataspace application backend"
+authors = ["IOXIO"]
+packages = [{include = "app", from = "."}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+fastapi = "^0.88.0"
+uvicorn = {version = "^0.20.0", extras = ["standard"]}
+Authlib = "^1.2.0"
+itsdangerous = "^2.1.2"
+httpx = "^0.23.1"
+pyjwt = "^2.6.0"
+
+[tool.poetry.scripts]
+dev = "app.main:main"
+serve = "app.prod:main"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
