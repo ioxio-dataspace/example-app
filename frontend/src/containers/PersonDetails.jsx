@@ -28,7 +28,7 @@ export default function PersonDetails() {
       return
     }
     setIsPersonFetching(true)
-    fetchDataProduct("draft/Person/Details", "ioxio", {}).then((data) => {
+    fetchDataProduct(DEFINITION, {}).then((data) => {
       setPersonDetails(data)
       setIsPersonFetching(false)
     })

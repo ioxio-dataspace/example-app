@@ -31,7 +31,7 @@ export default function CurrentWeather() {
   async function fetchWeather(event) {
     event.preventDefault()
     setIsFetching(true)
-    const resp = await fetchDataProduct(DEFINITION, "digitalliving", {
+    const resp = await fetchDataProduct(DEFINITION, {
       lat: lat,
       lon: lon,
     })
@@ -54,19 +54,21 @@ export default function CurrentWeather() {
               <input value={lat} onChange={(e) => setLat(e.target.value)} />
             </div>
             <div>
-              <div>Longtitude</div>
+              <div>Longitude</div>
               <input value={lon} onChange={(e) => setLon(e.target.value)} />
             </div>
             <button type="submit">Fetch</button>
           </form>
           <div>
             {isFetching && <i>Loading...</i>}
-            {!isFetching && weather.temp && <WeatherData weather={weather} />}
+            {!isFetching && weather.temp !== undefined && (
+              <WeatherData weather={weather} />
+            )}
           </div>
         </div>
         <p>
           Weather Data Product uses public information and it doesn't require any
-          authentication to fetch it
+          authentication to fetch it.
         </p>
         <p>
           By clicking "Fetch", you will request data from{" "}

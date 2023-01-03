@@ -10,9 +10,7 @@ export default function LoginForm() {
           require registration and it was implemented only for demo purposes.
         </p>
       </div>
-      <a href="/api/login">
-        <button>Login</button>
-      </a>
+      <a href="/api/login">Login</a>
     </div>
   )
 }

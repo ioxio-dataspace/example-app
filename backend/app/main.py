@@ -4,8 +4,8 @@ import httpx
 import jwt
 from authlib.common.urls import add_params_to_uri
 from authlib.integrations.starlette_client import OAuth, OAuthError
-from fastapi import Cookie, FastAPI, Query, Request
-from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
+from fastapi import Cookie, FastAPI, HTTPException, Query, Request
+from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.routing import APIRouter
 from httpx import Timeout
 from starlette.middleware.sessions import SessionMiddleware
@@ -21,7 +21,7 @@ oauth.register(
     name="login_portal",
     client_id=conf.OIDC_CLIENT_ID,
     client_secret=conf.OIDC_CLIENT_SECRET,
-    server_metadata_url=(conf.OIDC_PROVIDER + "/.well-known/openid-configuration"),
+    server_metadata_url=(conf.OIDC_PROVIDER_URL + "/.well-known/openid-configuration"),
     client_kwargs={
         "scope": conf.OIDC_SCOPES,
         "timeout": Timeout(timeout=conf.OIDC_REQUEST_TIMEOUT),
@@ -43,13 +43,13 @@ async def auth(request: Request):
     try:
         token = await oauth.login_portal.authorize_access_token(request)
     except OAuthError as error:
-        return HTMLResponse(f"<h1>{error.error}</h1>")
+        raise HTTPException(status_code=401, detail=error.error)
 
     id_token = token["id_token"]
     access_token = token["access_token"]
     expires_in = token["expires_in"]
 
-    response = RedirectResponse(url=conf.FRONTEND_URL)
+    response = RedirectResponse(url=conf.LOGIN_RETURN_URL)
 
     if id_token:
         response.set_cookie(
@@ -70,7 +70,7 @@ async def auth(request: Request):
 
 
 @router.get("/logout")
-async def logout(request: Request, id_token: Optional[str] = Cookie(default=None)):
+async def logout(id_token: Optional[str] = Cookie(default=None)):
     metadata = await oauth.login_portal.load_server_metadata()
     end_session_endpoint = metadata["end_session_endpoint"]
 
@@ -78,7 +78,7 @@ async def logout(request: Request, id_token: Optional[str] = Cookie(default=None
         end_session_endpoint,
         (
             ("id_token_hint", id_token),
-            ("post_logout_redirect_uri", conf.FRONTEND_URL),
+            ("post_logout_redirect_uri", conf.LOGIN_RETURN_URL),
         ),
     )
 
@@ -121,7 +121,10 @@ async def fetch_data_product(
 ):
     """
     Simple proxy from frontend to Product Gateway, because frontend
-    can't access Product Gateway directly due to CORS
+    can't access Product Gateway directly due to CORS.
+    Sometimes you have to include secrets to Product Gateway requests,
+    so it's more secure to communicate with the service using a backend
+    and not expose e.g private tokens to public.
     """
     body = await request.json()
     headers = {}

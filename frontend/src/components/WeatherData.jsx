@@ -1,18 +1,22 @@
 export default function WeatherData({ weather }) {
   function formatTemp(t) {
     const sign = t > 0 ? "+" : ""
-    return sign + Math.round(t * 10) / 10 + " °C"
+    return sign + t.toFixed(1) + " °C"
   }
 
   function formatWind(ws) {
-    return Math.round(ws * 10) / 10 + " m/s"
+    return ws.toFixed(1) + " m/s"
+  }
+
+  function formatHumidity(h) {
+    return Math.round(h) + "%"
   }
 
   return (
     <div className="data">
       <div>Temp: {formatTemp(weather.temp)}</div>
       <div>{weather.rain ? "Rain" : "No rain"}</div>
-      <div>Humidity: {Math.floor(weather.humidity)} %</div>
+      <div>Humidity: {formatHumidity(weather.humidity)}</div>
       <div>Wind: {formatWind(weather.windSpeed)}</div>
     </div>
   )

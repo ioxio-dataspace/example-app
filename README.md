@@ -9,10 +9,10 @@ retrieval and React-based frontend application.
 You can check the [online demo](TODO: add a link there) or run it locally (this way
 requires some configuration, so check [configuration](#configuration) section below).
 
-Main idea is to demostrate how to:
+Main idea is to demonstrate how to:
 
 - Perform authentication in a dataspace
-- Handle application configuration correctly
+- Use the application credentials
 - Retrieve data products from Product Gateway
 
 ## Repo structure
@@ -35,7 +35,10 @@ Main idea is to demostrate how to:
 Before running the app locally, you have to:
 
 1. Register an application in
-   [Developer Portal](https://developer.sandbox.ioxio-dataspace.com/)
+   [Developer Portal](https://developer.sandbox.ioxio-dataspace.com/). Use the following
+   values in the form:
+   - Redirect URI: `/api/auth`
+   - Logout redirect URI: `/api/logout`
 2. Obtain Client ID and Client secret of the application
 3. Create [backend/.env](backend/.env) file based on
    [backend/.env.example](backend/.env.example) and set the variables with values taken
@@ -43,7 +46,7 @@ Before running the app locally, you have to:
 
 ### Pre-requisites
 
-- [Python 3.10](https://www.python.org/) - For running backend
+- [Python 3.9+](https://www.python.org/) - For running backend
 - [Poetry](https://python-poetry.org/) - Python package manager
 - [Node](https://nodejs.org/en/) - For running frontend
 - [pnpm](https://pnpm.io/) - Node package manager
