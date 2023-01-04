@@ -31,9 +31,9 @@ RUN : \
     # Install poetry
     && curl -sSL https://install.python-poetry.org | python3 - \
     # Configure poetry
-    && mkdir "${POETRY_VENV_PATH}" \
-    && poetry config virtualenvs.in-project false \
-    && poetry config virtualenvs.path "${POETRY_VENV_PATH}" \
+    # && mkdir "${POETRY_VENV_PATH}" \
+    && poetry config virtualenvs.in-project true \
+    # && poetry config virtualenvs.path "${POETRY_VENV_PATH}" \
     # Cleanup
     && apt-get remove -y curl \
     && rm -rf /var/lib/apt/lists/* \
