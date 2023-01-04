@@ -21,19 +21,15 @@ ENV \
     PATH="/opt/poetry/bin:$PATH" \
     POETRY_HOME="/opt/poetry" \
     POETRY_VERSION=1.2.2 \
-    POETRY_VENV_PATH="/.venv" \
     ZZZ_ENV_LAST_LINE=""
 
 RUN : \
     # Install curl
     && apt-get update \
     && apt-get install -y curl \
-    # Install poetry
+    # Install and configure poetry
     && curl -sSL https://install.python-poetry.org | python3 - \
-    # Configure poetry
-    # && mkdir "${POETRY_VENV_PATH}" \
     && poetry config virtualenvs.in-project true \
-    # && poetry config virtualenvs.path "${POETRY_VENV_PATH}" \
     # Cleanup
     && apt-get remove -y curl \
     && rm -rf /var/lib/apt/lists/* \
