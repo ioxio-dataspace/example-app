@@ -16,10 +16,13 @@ RUN : \
 FROM python:3.10-slim as runtime
 
 # TODO: change it to real URL after deployment
-ENV BASE_URL="/" \
+ENV \
+    BASE_URL="http://localhost:3000" \
+    PATH="/opt/poetry/bin:$PATH" \
     POETRY_HOME="/opt/poetry" \
     POETRY_VERSION=1.2.2 \
-    PATH="/opt/poetry/bin:$PATH"
+    POETRY_VENV_PATH="/.venv" \
+    ZZZ_ENV_LAST_LINE=""
 
 RUN : \
     # Install curl
@@ -27,6 +30,10 @@ RUN : \
     && apt-get install -y curl \
     # Install poetry
     && curl -sSL https://install.python-poetry.org | python3 - \
+    # Configure poetry
+    && mkdir "${POETRY_VENV_PATH}" \
+    && poetry config virtualenvs.in-project false \
+    && poetry config virtualenvs.path "${POETRY_VENV_PATH}" \
     # Cleanup
     && apt-get remove -y curl \
     && rm -rf /var/lib/apt/lists/* \
@@ -42,5 +49,5 @@ USER ${USER}
 ADD backend ./
 RUN poetry install
 
-EXPOSE 8000
+EXPOSE 8080
 ENTRYPOINT ["poetry", "run", "serve"]
