@@ -43,7 +43,6 @@ RUN : \
 COPY --from=build /src/frontend/dist /src/app/static
 
 WORKDIR /src/app
-USER ${USER}
 
 # Add backend code and install python dependencies
 ADD backend ./
