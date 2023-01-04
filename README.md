@@ -37,8 +37,8 @@ Before running the app locally, you have to:
 1. Register an application in
    [Developer Portal](https://developer.sandbox.ioxio-dataspace.com/). Use the following
    values in the form:
-   - Redirect URI: `/api/auth`
-   - Logout redirect URI: `/api/logout`
+   - Redirect URI: `http://localhost:3000/api/auth`
+   - Logout redirect URI: `http://localhost:3000`
 2. Obtain Client ID and Client secret of the application
 3. Create [backend/.env](backend/.env) file based on
    [backend/.env.example](backend/.env.example) and set the variables with values taken

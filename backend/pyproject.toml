@@ -13,6 +13,7 @@ Authlib = "^1.2.0"
 itsdangerous = "^2.1.2"
 httpx = "^0.23.1"
 pyjwt = "^2.6.0"
+pyjwt-key-fetcher = "^0.2.0"
 
 [tool.poetry.scripts]
 dev = "app.main:main"

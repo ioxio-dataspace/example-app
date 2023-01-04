@@ -8,6 +8,7 @@ from fastapi import Cookie, FastAPI, HTTPException, Query, Request
 from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.routing import APIRouter
 from httpx import Timeout
+from pyjwt_key_fetcher import AsyncKeyFetcher
 from starlette.middleware.sessions import SessionMiddleware
 
 from .settings import conf
@@ -28,12 +29,14 @@ oauth.register(
     },
 )
 
+key_fetcher = AsyncKeyFetcher()
+
 
 @router.get("/login")
 async def login(request: Request):
     return await oauth.login_portal.authorize_redirect(
         request=request,
-        redirect_uri=request.url_for("auth"),
+        redirect_uri=f"{conf.BASE_URL}/api/auth",
         acr_values=conf.OIDC_ACR_VALUES,
     )
 
@@ -49,7 +52,7 @@ async def auth(request: Request):
     access_token = token["access_token"]
     expires_in = token["expires_in"]
 
-    response = RedirectResponse(url=conf.LOGIN_RETURN_URL)
+    response = RedirectResponse(url=conf.BASE_URL)
 
     if id_token:
         response.set_cookie(
@@ -78,7 +81,7 @@ async def logout(id_token: Optional[str] = Cookie(default=None)):
         end_session_endpoint,
         (
             ("id_token_hint", id_token),
-            ("post_logout_redirect_uri", conf.LOGIN_RETURN_URL),
+            ("post_logout_redirect_uri", conf.BASE_URL),
         ),
     )
 
@@ -97,12 +100,17 @@ async def logout(id_token: Optional[str] = Cookie(default=None)):
 
 
 @router.get("/me")
-def user_profile(id_token: Optional[str] = Cookie(default=None)):
+async def user_profile(id_token: Optional[str] = Cookie(default=None)):
     """
     Return information about the currently authenticated user
     """
     if id_token:
-        token = jwt.decode(id_token, options={"verify_signature": False})
+        key_entry = await key_fetcher.get_key(id_token)
+        token = jwt.decode(
+            id_token,
+            audience=conf.OIDC_CLIENT_ID,
+            **key_entry,
+        )
         return {
             "loggedIn": True,
             "email": token["email"],
@@ -120,8 +128,7 @@ async def fetch_data_product(
     id_token: Optional[str] = Cookie(default=None),
 ):
     """
-    Simple proxy from frontend to Product Gateway, because frontend
-    can't access Product Gateway directly due to CORS.
+    Simple proxy from frontend to Product Gateway.
     Sometimes you have to include secrets to Product Gateway requests,
     so it's more secure to communicate with the service using a backend
     and not expose e.g private tokens to public.
@@ -131,13 +138,14 @@ async def fetch_data_product(
     if id_token:
         headers["authorization"] = f"Bearer {id_token}"
 
-    resp = httpx.post(
-        f"{conf.PRODUCT_GATEWAY_URL}/{data_product}",
-        params={"source": source},
-        json=body,
-        headers=headers,
-        timeout=30,
-    )
+    async with httpx.AsyncClient() as client:
+        resp = await client.post(
+            f"{conf.PRODUCT_GATEWAY_URL}/{data_product}",
+            params={"source": source},
+            json=body,
+            headers=headers,
+            timeout=30,
+        )
     return JSONResponse(resp.json(), resp.status_code)
 
 

@@ -30,8 +30,8 @@ class Settings(BaseSettings):
     # Timeout value for requests to OIDC provider
     OIDC_REQUEST_TIMEOUT: int = 30
 
-    # Address the frontend is running in, used e.g. for returning users from login flow
-    LOGIN_RETURN_URL: str = "http://localhost:3000"
+    # Base URL of the application
+    BASE_URL: str = "http://localhost:3000"
 
     class Config:
         env_file = ".env"

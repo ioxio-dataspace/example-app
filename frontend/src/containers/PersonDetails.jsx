@@ -37,20 +37,20 @@ export default function PersonDetails() {
 
   if (isUserLoading) {
     return (
-      <Box definition={DEFINITION}>
+      <Box title={"Authentication"}>
         <i>Loading...</i>
       </Box>
     )
   } else if (!user.loggedIn) {
     return (
-      <Box definition={DEFINITION}>
+      <Box title={"Authentication"}>
         <LoginForm />
       </Box>
     )
   }
 
   return (
-    <Box definition={DEFINITION}>
+    <Box title={"Authentication"}>
       <div className="user-navbar">
         <div>Logged in as {user.email}</div>
         <a href="/api/logout">Logout</a>

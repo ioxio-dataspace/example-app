@@ -11,7 +11,8 @@ RUN pnpm install && pnpm build
 
 FROM digitallivinginternational/python-base:ubuntu22.04-python3.10 as runtime
 
-ENV LOGIN_RETURN_URL="/"
+# TODO: change it to real URL after deployment
+ENV BASE_URL="/"
 
 COPY --from=build /src/frontend/dist /src/app/static
 
