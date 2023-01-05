@@ -16,4 +16,4 @@ def main():
     import uvicorn
 
     port = int(os.environ.get("PORT", "8080"))
-    uvicorn.run("app.prod:app", host="0.0.0.0", port=port)
+    uvicorn.run("app.prod:app", host="0.0.0.0", port=port, workers=2)

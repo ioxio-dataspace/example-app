@@ -6,8 +6,8 @@ application using Dataspace tecnhologies.
 It consists of simple Python backend that is responsible for authentication and data
 retrieval and React-based frontend application.
 
-You can check the [online demo](TODO: add a link there) or run it locally (this way
-requires some configuration, so check [configuration](#configuration) section below).
+You can check the [online demo](https://example-app.demos.ioxio.dev) or run it locally
+(check the [configuration](#configuration) section for the instructions).
 
 Main idea is to demonstrate how to:
 
