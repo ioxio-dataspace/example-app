@@ -1,7 +1,7 @@
 # IOXIO Dataspace example app
 
 This demo application is designed to show a practical example on how to create an
-application using Dataspace tecnhologies.
+application using Dataspace technologies.
 
 It consists of simple Python backend that is responsible for authentication and data
 retrieval and React-based frontend application.
