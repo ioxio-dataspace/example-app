@@ -15,9 +15,8 @@ RUN : \
 
 FROM python:3.10-slim as runtime
 
-# TODO: change it to real URL after deployment
 ENV \
-    BASE_URL="http://localhost:3000" \
+    BASE_URL="https://example-app.demos.ioxio.dev" \
     PATH="/opt/poetry/bin:$PATH" \
     POETRY_HOME="/opt/poetry" \
     POETRY_VERSION=1.2.2 \
