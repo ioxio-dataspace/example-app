@@ -1,5 +1,7 @@
 {
   "name": "example-app-frontend",
+  "description": "Example dataspace application frontend",
+  "license": "BSD-3-Clause",
   "private": true,
   "version": "0.0.1",
   "type": "module",

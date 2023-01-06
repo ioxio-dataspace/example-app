@@ -16,7 +16,6 @@ RUN : \
 FROM python:3.10-slim as runtime
 
 ENV \
-    BASE_URL="https://example-app.demos.ioxio.dev" \
     PATH="/opt/poetry/bin:$PATH" \
     POETRY_HOME="/opt/poetry" \
     POETRY_VERSION=1.2.2 \

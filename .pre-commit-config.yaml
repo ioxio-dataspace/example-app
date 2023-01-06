@@ -10,7 +10,6 @@ repos:
       - id: check-added-large-files
       - id: check-merge-conflict
       - id: debug-statements
-      # All non-bat files should end with LF
   - repo: https://github.com/pycqa/isort
     rev: 5.11.4
     hooks:

@@ -34,6 +34,9 @@ key_fetcher = AsyncKeyFetcher()
 
 @router.get("/login")
 async def login(request: Request):
+    """
+    Start OpenID Connect login flow
+    """
     return await oauth.login_portal.authorize_redirect(
         request=request,
         redirect_uri=f"{conf.BASE_URL}/api/auth",
@@ -43,6 +46,9 @@ async def login(request: Request):
 
 @router.get("/auth")
 async def auth(request: Request):
+    """
+    Route used as return URL in OpenID Connect flow
+    """
     try:
         token = await oauth.login_portal.authorize_access_token(request)
     except OAuthError as error:
@@ -74,6 +80,9 @@ async def auth(request: Request):
 
 @router.get("/logout")
 async def logout(id_token: Optional[str] = Cookie(default=None)):
+    """
+    Start logout in OpenID Connect flow
+    """
     metadata = await oauth.login_portal.load_server_metadata()
     end_session_endpoint = metadata["end_session_endpoint"]
 
