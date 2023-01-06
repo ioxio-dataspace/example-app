@@ -23,8 +23,8 @@ class Settings(BaseSettings):
     OIDC_CLIENT_SECRET: str = ""
 
     # Secret used to protect the session
-    # Currently this is generated during at script execution, so it's not a static value.
-    # Don't do that in production
+    # By default this generates a new secret on each startup. In an actual deployment 
+    # you should provide it as an environment variable or through the .env file
     SESSION_SECRET: str = secrets.token_urlsafe()
 
     # Timeout value for requests to OIDC provider

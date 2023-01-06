@@ -19,6 +19,6 @@ export async function getUser() {
     })
     return await resp.json()
   } catch (err) {
-    throw new Error("Failed to fetch a user")
+    throw new Error("Failed to fetch the current user")
   }
 }

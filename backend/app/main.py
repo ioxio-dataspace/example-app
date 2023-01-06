@@ -129,9 +129,9 @@ async def fetch_data_product(
 ):
     """
     Simple proxy from frontend to Product Gateway.
-    Sometimes you have to include secrets to Product Gateway requests,
-    so it's more secure to communicate with the service using a backend
-    and not expose e.g private tokens to public.
+
+    Some requests to the Product Gateway require authentication of
+    the application, thus we route all the request through the backend.
     """
     body = await request.json()
     headers = {}
