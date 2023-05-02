@@ -10,6 +10,8 @@ from fastapi.routing import APIRouter
 from httpx import Timeout
 from pyjwt_key_fetcher import AsyncKeyFetcher
 from starlette.middleware.sessions import SessionMiddleware
+from app.consents import router as consents_router
+from app.well_known import router as well_known_router
 
 from .settings import conf
 
@@ -104,6 +106,10 @@ async def logout(id_token: Optional[str] = Cookie(default=None)):
         key="access_token",
         httponly=True,
     )
+    response.delete_cookie(
+        key="consent_token",
+        httponly=True,
+    )
 
     return response
 
@@ -158,7 +164,9 @@ async def fetch_data_product(
     return JSONResponse(resp.json(), resp.status_code)
 
 
+router.include_router(consents_router)
 app.include_router(router, prefix="/api")
+app.include_router(well_known_router, prefix="/.well-known")
 
 
 def main():

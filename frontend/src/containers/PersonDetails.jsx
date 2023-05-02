@@ -28,8 +28,10 @@ export default function PersonDetails() {
       return
     }
     setIsPersonFetching(true)
-    fetchDataProduct(DEFINITION, {}).then((data) => {
-      setPersonDetails(data)
+    fetchDataProduct(DEFINITION, {}).then((resp) => {
+      if (resp.ok){
+        setPersonDetails(resp.data)
+      }
       setIsPersonFetching(false)
     })
     return () => {}

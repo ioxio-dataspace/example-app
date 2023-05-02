@@ -1,5 +1,7 @@
 import secrets
 
+from app.keys import RsaPrivateKey
+
 from pydantic import BaseSettings
 
 
@@ -16,6 +18,13 @@ class Settings(BaseSettings):
 
     # The base URL to Product Gateway
     PRODUCT_GATEWAY_URL: str = "https://gateway.sandbox.ioxio-dataspace.com"
+
+    # The base URL to Consent Portal
+    CONSENT_PORTAL_URL: str = "https://consent.sandbox.ioxio-dataspace.com"
+    CONSENT_REQUEST_TOKEN_ISSUER: str = "https://ioxio.com"
+    CONSENT_REQUEST_TOKEN_VALID_SECONDS: int = 3600
+
+    PRIVATE_KEY: RsaPrivateKey
 
     # The client ID and client secret for the app you created in the developer portal
     OIDC_CLIENT_ID: str = ""
