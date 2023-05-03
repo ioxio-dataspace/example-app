@@ -66,7 +66,13 @@ export default function BeneficialOwners() {
   } else if (verifyConsentUrl !== "") {
     return (
       <Box title={"Consent"}>
-        <div>Consent is required</div>
+        <div>
+          Some data sources can require a consent from a user to return the data.
+        </div>
+        <div>
+          By clicking the button below you will be redirected to Consent Portal for
+          approving or denying the consent.
+        </div>
         <button onClick={onRequestConsentClick}>Request consent</button>
       </Box>
     )
@@ -102,6 +108,7 @@ export default function BeneficialOwners() {
           <a href={conf.CONSENT_PORTAL_URL} target="_blank">
             Consent Portal
           </a>
+          . For example, you can revoke it.
         </p>
         <p>
           Profile data is based on an email and fetched automatically from{" "}
