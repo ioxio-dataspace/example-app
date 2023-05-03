@@ -33,6 +33,11 @@ class Settings(BaseSettings):
     OIDC_CLIENT_ID: str = ""
     OIDC_CLIENT_SECRET: str = ""
 
+    # In this app we request data from a data source that is published under ioxio
+    DATA_PRODUCT_SOURCE: str = "ioxio"
+    # The domain you want to requests consents for
+    DATASPACE_DOMAIN: str = "sandbox.ioxio-dataspace.com"
+
     # Secret used to protect the session
     # By default this generates a new secret on each startup. In an actual deployment
     # you should provide it as an environment variable or through the .env file

@@ -92,11 +92,7 @@ def make_dsi_uri(definition: str) -> str:
     :param definition: Data Product Definition
     :return: Data Source Identifier
     """
-    # In this app we use a Data Product published by "ioxio"
-    source = "ioxio"
-    # This app is operating with IOXIO Sandbox Dataspace
-    domain = "sandbox.ioxio-dataspace.com"
-    return f"dpp://{source}@{domain}/{definition}"
+    return f"dpp://{conf.DATA_PRODUCT_SOURCE}@{conf.DATASPACE_DOMAIN}/{definition}"
 
 
 async def request_consent_token(dsi: str, sub: str) -> Optional[str]:
