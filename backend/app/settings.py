@@ -23,9 +23,10 @@ class Settings(BaseSettings):
     CONSENT_PORTAL_URL: str = "https://consent.sandbox.ioxio-dataspace.com"
     # https:// + your party configuration domain
     CONSENT_REQUEST_TOKEN_ISSUER: str = "https://example-app.demos.ioxio.dev"
-
+    # Validity time of consent request token
     CONSENT_REQUEST_TOKEN_VALID_SECONDS: int = 3600
 
+    # Key used for signing consent request tokens
     PRIVATE_KEY: RsaPrivateKey
 
     # The client ID and client secret for the app you created in the developer portal

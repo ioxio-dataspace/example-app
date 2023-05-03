@@ -62,21 +62,21 @@ def create_consent_request_token(sub) -> dict:
     key = conf.PRIVATE_KEY
 
     now = int(time.time())
-    crt = dict(
-        iss=conf.CONSENT_REQUEST_TOKEN_ISSUER,
-        sub=sub,
-        subiss=conf.OIDC_PROVIDER_URL,
-        acr=conf.OIDC_ACR_VALUES,
-        app=conf.OIDC_CLIENT_ID,
-        appiss=conf.OIDC_PROVIDER_URL,
-        aud=conf.CONSENT_PORTAL_URL,
-        exp=now + conf.CONSENT_REQUEST_TOKEN_VALID_SECONDS,
-        iat=now,
-    )
-    headers = dict(
-        v="0.2",
-        kid=key.kid,
-    )
+    crt = {
+        "iss": conf.CONSENT_REQUEST_TOKEN_ISSUER,
+        "sub": sub,
+        "subiss": conf.OIDC_PROVIDER_URL,
+        "acr": conf.OIDC_ACR_VALUES,
+        "app": conf.OIDC_CLIENT_ID,
+        "appiss": conf.OIDC_PROVIDER_URL,
+        "aud": conf.CONSENT_PORTAL_URL,
+        "exp": now + conf.CONSENT_REQUEST_TOKEN_VALID_SECONDS,
+        "iat": now,
+    }
+    headers = {
+        "v": "0.2",
+        "kid": key.kid,
+    }
     token = jwt.encode(
         payload=crt,
         key=key.get_secret_value(),
