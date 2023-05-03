@@ -21,7 +21,9 @@ class Settings(BaseSettings):
 
     # The base URL to Consent Portal
     CONSENT_PORTAL_URL: str = "https://consent.sandbox.ioxio-dataspace.com"
-    CONSENT_REQUEST_TOKEN_ISSUER: str = "https://ioxio.com"
+    # https:// + your party configuration domain
+    CONSENT_REQUEST_TOKEN_ISSUER: str = "https://example-app.demos.ioxio.dev"
+
     CONSENT_REQUEST_TOKEN_VALID_SECONDS: int = 3600
 
     PRIVATE_KEY: RsaPrivateKey

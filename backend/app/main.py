@@ -106,11 +106,6 @@ async def logout(id_token: Optional[str] = Cookie(default=None)):
         key="access_token",
         httponly=True,
     )
-    response.delete_cookie(
-        key="consent_token",
-        httponly=True,
-    )
-
     return response
 
 

@@ -12,6 +12,10 @@ from pyjwt_key_fetcher.errors import JWTKeyFetcherError
 router = APIRouter()
 
 
+class MissingConsentToken(Exception):
+    pass
+
+
 @lru_cache(maxsize=1)
 def get_key_fetcher() -> AsyncKeyFetcher:
     """
@@ -28,7 +32,6 @@ async def parse_token(id_token: Optional[str]) -> str:
     """
     if not id_token:
         raise HTTPException(401, "User not logged in")
-
     try:
         token = await validate_token(id_token=id_token)
     except jwt.exceptions.InvalidTokenError:
@@ -112,7 +115,8 @@ async def request_consent_token(dsi: str, sub: str) -> Optional[str]:
     data = resp.json()
     if data.get("type") == "consentGranted":
         return data["consentToken"]
-    return None
+    else:
+        raise MissingConsentToken
 
 
 async def get_consent_verification_url(dsi: str, sub: str) -> Optional[str]:
@@ -141,7 +145,6 @@ async def fetch_data_product(
     request: Request,
     source=Query(),
     id_token: Optional[str] = Cookie(default=None),
-    consent_token: Optional[str] = Cookie(default=None),
 ):
     """
     A proxy from frontend to Product Gateway for data products that require consent.
@@ -154,11 +157,14 @@ async def fetch_data_product(
 
     dsi = make_dsi_uri(data_product)
 
-    # if consent_token cookie doesn't exist, try to fetch a token from Consent Portal
-    if not consent_token:
+    try:
+        # Try to fetch a token from Consent Portal
+        # IMPORTANT! Here we request consent token every time.
+        # In real applications you might want to save the token in database
+        # or a cookie and reuse it to avoid making extra API calls
         consent_token = await request_consent_token(dsi, sub)
-    # if no token is returned then the user should approve the consent in UI
-    if not consent_token:
+    except MissingConsentToken:
+        # if no token is returned then the user should approve the consent in UI
         verify_url = await get_consent_verification_url(dsi, sub)
         return JSONResponse(
             {"error": "Consent is required", "verifyUrl": verify_url},
@@ -179,21 +185,4 @@ async def fetch_data_product(
             headers=headers,
             timeout=30,
         )
-    ds_json = resp.json()
-    if resp.status_code == 502 and ds_json.get('status') == 403:
-        # We tried to request data with consent token,
-        # but it has expired or it's invalid. We need to request a new one
-        verify_url = await get_consent_verification_url(dsi, sub)
-        response = JSONResponse(
-            {"error": "Consent is required", "verifyUrl": verify_url},
-            status_code=403,
-        )
-        response.delete_cookie(key="consent_token", httponly=True)
-        return response
-    else:
-        response = JSONResponse(ds_json, resp.status_code)
-        # Store consent token in a cookie for further requests.
-        # NOTE! This is just an example of how this value can be handled.
-        # You might want to consider storing this value in a database instead.
-        response.set_cookie(key="consent_token", value=consent_token, httponly=True)
-        return response
+    return JSONResponse(resp.json(), resp.status_code)
