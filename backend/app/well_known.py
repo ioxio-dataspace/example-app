@@ -1,7 +1,7 @@
 """
 This file is responsible for hosting Party Configuration and JWKs
 
-Read more there:
+Read more at:
 https://ioxio.com/guides/how-to-create-a-group#creating-and-hosting-party-configuration
 https://well-known-docs.sandbox.ioxio-dataspace.com/party-configuration.html
 """
