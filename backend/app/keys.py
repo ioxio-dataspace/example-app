@@ -70,6 +70,10 @@ class RsaPrivateKey(SecretStr):
 
     @cached_property
     def kid(self):
+        from app.settings import conf
+
+        if conf.PRIVATE_KEY_ID:
+            return conf.PRIVATE_KEY_ID
         return sha256(f"rsa:{self.e}:{self.n}".encode()).hexdigest()[:32]
 
     @cached_property
