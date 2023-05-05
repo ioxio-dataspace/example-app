@@ -1,4 +1,5 @@
 import secrets
+from typing import Optional
 
 from app.keys import RsaPrivateKey
 from pydantic import BaseSettings
@@ -20,8 +21,8 @@ class Settings(BaseSettings):
 
     # The base URL to Consent Portal
     CONSENT_PORTAL_URL: str = "https://consent.sandbox.ioxio-dataspace.com"
-    # https:// + your party configuration domain
-    CONSENT_REQUEST_TOKEN_ISSUER: str = "https://example-app.demos.ioxio.dev"
+    # Your party configuration domain
+    PARTY_CONFIGURATION_DOMAIN: str = "https://example-app.demos.ioxio.dev"
     # Validity time of consent request token
     CONSENT_REQUEST_TOKEN_VALID_SECONDS: int = 3600
 
@@ -63,6 +64,9 @@ class Settings(BaseSettings):
     VIvg/B38+PGLctRTszT9lyg/XDUPXCufqsXPMeaWL3h/7A==
     -----END RSA PRIVATE KEY-----
     """
+
+    # kid
+    PRIVATE_KEY_ID: Optional[str] = None
 
     class Config:
         env_file = ".env"

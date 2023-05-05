@@ -39,7 +39,11 @@ Main idea is to demonstrate how to:
 
 Before running the app locally, you have to:
 
-1. Register your application in the
+1. Create a group in [Developer Portal](https://developer.sandbox.ioxio-dataspace.com/).
+   and set party configuration domain to `example-app.demos.ioxio.dev`. Or follow the
+   [guide](https://ioxio.com/guides/how-to-create-a-group#creating-and-hosting-party-configuration)
+   to create and host your own.
+2. Register new application in the
    [Developer Portal](https://developer.sandbox.ioxio-dataspace.com/). Use the following
    values in the form:
 
@@ -49,9 +53,11 @@ Before running the app locally, you have to:
    Note: In the next step you will need the Client ID and Client secret that get
    generated when you complete the registration of the application.
 
-2. Create the [backend/.env](backend/.env) file based on
-   [backend/.env.example](backend/.env.example) and set the variables with the values
-   from the previous step.
+3. Create the [backend/.env](backend/.env) file based on
+   [backend/.env.example](backend/.env.example) and set `OIDC_CLIENT_ID` and
+   `OIDC_CLIENT_SECRET` variables with the values from the previous step.
+4. Additionally, if you host your own party configuration, then set the corresponding
+   key as `PRIVATE_KEY`, set `PRIVATE_KEY_ID` and update `PARTY_CONFIGURATION_DOMAIN`.
 
 ### Pre-requisites
 

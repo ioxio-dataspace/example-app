@@ -64,7 +64,7 @@ def create_consent_request_token(sub) -> str:
 
     now = int(time.time())
     crt = {
-        "iss": conf.CONSENT_REQUEST_TOKEN_ISSUER,
+        "iss": f"https://{conf.PARTY_CONFIGURATION_DOMAIN}",
         "sub": sub,
         "subiss": conf.OIDC_PROVIDER_URL,
         "acr": conf.OIDC_ACR_VALUES,
@@ -76,7 +76,7 @@ def create_consent_request_token(sub) -> str:
     }
     headers = {
         "v": "0.2",
-        "kid": key.kid,
+        "kid": conf.PRIVATE_KEY_ID or key.kid,
     }
     token = jwt.encode(
         payload=crt,
