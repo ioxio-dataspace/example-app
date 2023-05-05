@@ -64,4 +64,4 @@ async def party_configuration(req: Request, resp: Response):
 )
 async def jwks(resp: Response):
     resp.headers["Access-Control-Allow-Origin"] = "*"
-    return JWKSResponse(keys=[conf.PRIVATE_KEY.kid])
+    return JWKSResponse(keys=[conf.PRIVATE_KEY.jwk])
