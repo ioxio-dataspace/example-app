@@ -33,6 +33,8 @@ export default function CurrentWeather() {
     const resp = await fetchDataProduct(DEFINITION, { lat, lon })
     if (resp.ok) {
       setWeather(resp.data)
+    } else {
+      throw new Error("Failed to fetch current weather")
     }
     setIsFetching(false)
   }

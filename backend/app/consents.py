@@ -1,18 +1,19 @@
-from functools import lru_cache
 import time
+from functools import lru_cache
+from typing import Optional
+
 import httpx
 import jwt
 from app.settings import conf
 from fastapi import APIRouter, Cookie, HTTPException, Query, Request
 from fastapi.responses import JSONResponse
-from typing import Optional
 from pyjwt_key_fetcher import AsyncKeyFetcher
 from pyjwt_key_fetcher.errors import JWTKeyFetcherError
 
 router = APIRouter()
 
 
-class MissingConsentToken(Exception):
+class MissingConsent(Exception):
     pass
 
 
@@ -86,20 +87,21 @@ def create_consent_request_token(sub) -> dict:
     return token
 
 
-def make_dsi_uri(definition: str) -> str:
+def make_dsi_uri(definition: str, source: str) -> str:
     """
     Make Data Source Identifier
     :param definition: Data Product Definition
+    :param source: Source that data product is published under
     :return: Data Source Identifier
     """
-    return f"dpp://{conf.DATA_PRODUCT_SOURCE}@{conf.DATASPACE_DOMAIN}/{definition}"
+    return f"dpp://{source}@{conf.DATASPACE_DOMAIN}/{definition}"
 
 
 async def request_consent_token(dsi: str, sub: str) -> Optional[str]:
     """
     Fetch Consent Token from Consent Portal
     :param dsi: Data Source Identifier
-    :param sub: Subject for a consent
+    :param sub: Subject for the consent
     :return: Consent Token if it has been granted already, None otherwise
     """
     url = f"{conf.CONSENT_PORTAL_URL}/Consent/GetToken"
@@ -112,7 +114,7 @@ async def request_consent_token(dsi: str, sub: str) -> Optional[str]:
     if data.get("type") == "consentGranted":
         return data["consentToken"]
     else:
-        raise MissingConsentToken
+        raise MissingConsent
 
 
 async def get_consent_verification_url(dsi: str, sub: str) -> Optional[str]:
@@ -151,7 +153,7 @@ async def fetch_data_product(
     # Validate ID Token to find a user ID that we use as a "sub" for consent request
     sub = await parse_token(id_token)
 
-    dsi = make_dsi_uri(data_product)
+    dsi = make_dsi_uri(data_product, source)
 
     try:
         # Try to fetch a token from Consent Portal
@@ -159,11 +161,14 @@ async def fetch_data_product(
         # In real applications you might want to save the token in database
         # or a cookie and reuse it to avoid making extra API calls
         consent_token = await request_consent_token(dsi, sub)
-    except MissingConsentToken:
+    except MissingConsent:
         # if no token is returned then the user should approve the consent in UI
         verify_url = await get_consent_verification_url(dsi, sub)
         return JSONResponse(
-            {"error": "Consent is required", "verifyUrl": verify_url},
+            {
+                "error": "Consent is required",
+                "verifyUrl": verify_url,
+            },
             status_code=403,
         )
 

@@ -1,7 +1,6 @@
 import secrets
 
 from app.keys import RsaPrivateKey
-
 from pydantic import BaseSettings
 
 
@@ -33,8 +32,6 @@ class Settings(BaseSettings):
     OIDC_CLIENT_ID: str = ""
     OIDC_CLIENT_SECRET: str = ""
 
-    # In this app we request data from a data source that is published under ioxio
-    DATA_PRODUCT_SOURCE: str = "ioxio"
     # The domain you want to requests consents for
     DATASPACE_DOMAIN: str = "sandbox.ioxio-dataspace.com"
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import Box from "../components/Box"
 import LoginForm from "../components/LoginForm"
-import { fetchDataProductWithConsent, getUser } from "../utils"
+import { fetchDataProduct, getUser } from "../utils"
 import DataProductLink from "../components/DataProductLink"
 import conf from "../settings"
 
@@ -31,9 +31,13 @@ export default function BeneficialOwners() {
         return
       }
       setIsLoading(true)
-      const resp = await fetchDataProductWithConsent(DEFINITION, {
-        nationalIdentifier: COMPANY_ID,
-      })
+      const resp = await fetchDataProduct(
+        DEFINITION,
+        {
+          nationalIdentifier: COMPANY_ID,
+        },
+        true
+      ) // consent=true
       if (resp.ok) {
         setOwnersData(resp.data)
       }
@@ -41,6 +45,8 @@ export default function BeneficialOwners() {
       else if (resp.status === 403) {
         const currentUrl = window.location.href.split("?")[0]
         setVerifyConsentUrl(`${resp.data.verifyUrl}?returnUrl=${currentUrl}`)
+      } else {
+        throw new Error("Failed to fetch beneficial owners")
       }
       setIsLoading(false)
       return () => {}
@@ -100,7 +106,7 @@ export default function BeneficialOwners() {
       ))}
       <div>
         <p>
-          This data is available only for users who granted this applciation a consent
+          This data is available only for users who granted this application a consent
           to view this data.
         </p>
         <p>

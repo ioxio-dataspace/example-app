@@ -15,6 +15,7 @@ Main idea is to demonstrate how to:
 - Retrieve data products from Product Gateway
 - Perform authentication in a dataspace
 - Use the authentication tokens for data products
+- Request data products that require consent
 
 ## Repo structure
 
@@ -48,6 +49,8 @@ Before running the app locally, you have to:
 2. Create the [backend/.env](backend/.env) file based on
    [backend/.env.example](backend/.env.example) and set the variables with the values
    from the previous step.
+3. Generate RSA key pair (for example on https://cryptotools.net/rsagen) and copy
+   private key to [backend/.env](backend/.env).
 
 ### Pre-requisites
 

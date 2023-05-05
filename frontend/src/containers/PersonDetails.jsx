@@ -29,8 +29,10 @@ export default function PersonDetails() {
     }
     setIsPersonFetching(true)
     fetchDataProduct(DEFINITION, {}).then((resp) => {
-      if (resp.ok){
+      if (resp.ok) {
         setPersonDetails(resp.data)
+      } else {
+        throw new Error("Failed to fetch person details")
       }
       setIsPersonFetching(false)
     })
