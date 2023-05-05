@@ -117,7 +117,7 @@ export default function BeneficialOwners() {
           . For example, you can revoke it.
         </p>
         <p>
-          Profile data is based on an email and fetched automatically from{" "}
+          Data about beneficial owners is a stub, but it's fetched from{" "}
           <DataProductLink definition={DEFINITION} />
         </p>
       </div>

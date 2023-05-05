@@ -32,7 +32,7 @@ class Settings(BaseSettings):
     OIDC_CLIENT_ID: str = ""
     OIDC_CLIENT_SECRET: str = ""
 
-    # The domain you want to requests consents for
+    # The dataspace domain you want to request consents for
     DATASPACE_DOMAIN: str = "sandbox.ioxio-dataspace.com"
 
     # Secret used to protect the session

@@ -59,7 +59,7 @@ async def validate_token(id_token: str) -> dict:
     )
 
 
-def create_consent_request_token(sub) -> dict:
+def create_consent_request_token(sub) -> str:
     key = conf.PRIVATE_KEY
 
     now = int(time.time())
@@ -97,7 +97,7 @@ def make_dsi_uri(definition: str, source: str) -> str:
     return f"dpp://{source}@{conf.DATASPACE_DOMAIN}/{definition}"
 
 
-async def request_consent_token(dsi: str, sub: str) -> Optional[str]:
+async def fetch_consent_token(dsi: str, sub: str) -> Optional[str]:
     """
     Fetch Consent Token from Consent Portal
     :param dsi: Data Source Identifier
@@ -146,9 +146,10 @@ async def fetch_data_product(
 ):
     """
     A proxy from frontend to Product Gateway for data products that require consent.
-    First it tries to find consent token in a cookie and if not found it
-    tries to fetch a new token from Consent Portal. If it's an initial request,
-    then a user must grant the consent in Consent Portal UI.
+
+    Before requesting the data it first obtains a consent token from Consent Portal.
+    If it's the initial request, then the user must grant the consent
+    in the Consent Portal UI.
     """
     # Validate ID Token to find a user ID that we use as a "sub" for consent request
     sub = await parse_token(id_token)
@@ -160,7 +161,7 @@ async def fetch_data_product(
         # IMPORTANT! Here we request consent token every time.
         # In real applications you might want to save the token in database
         # or a cookie and reuse it to avoid making extra API calls
-        consent_token = await request_consent_token(dsi, sub)
+        consent_token = await fetch_consent_token(dsi, sub)
     except MissingConsent:
         # if no token is returned then the user should approve the consent in UI
         verify_url = await get_consent_verification_url(dsi, sub)
