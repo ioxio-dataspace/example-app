@@ -22,6 +22,9 @@ Main idea is to demonstrate how to:
 - [backend](./backend/) - Python [FastAPI](https://fastapi.tiangolo.com/) backend
   - [main.py](./backend/app/main.py) - All the backend routes, e.g. for authentication
     or data retrieval
+  - [consents.py](./backend/app/consents.py) - Code related to requesting data products
+    that require a consent
+  - [well_known.py](./backend/app/well_known.py) - Party configuration related endpoints
   - [settings.py](./backend/app/settings.py) - Backend configuration
 - [frontend](./frontend) - React application
   - [containers](./frontend/src/containers) - Root containers for handling data products
@@ -49,8 +52,6 @@ Before running the app locally, you have to:
 2. Create the [backend/.env](backend/.env) file based on
    [backend/.env.example](backend/.env.example) and set the variables with the values
    from the previous step.
-3. Generate RSA key pair (for example on https://cryptotools.net/rsagen) and copy
-   private key to [backend/.env](backend/.env).
 
 ### Pre-requisites
 
