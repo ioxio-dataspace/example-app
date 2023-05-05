@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     # The base URL to Consent Portal
     CONSENT_PORTAL_URL: str = "https://consent.sandbox.ioxio-dataspace.com"
     # Your party configuration domain
-    PARTY_CONFIGURATION_DOMAIN: str = "https://example-app.demos.ioxio.dev"
+    PARTY_CONFIGURATION_DOMAIN: str = "example-app.demos.ioxio.dev"
     # Validity time of consent request token
     CONSENT_REQUEST_TOKEN_VALID_SECONDS: int = 3600
 
