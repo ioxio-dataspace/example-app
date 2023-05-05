@@ -1,16 +1,3 @@
-export async function fetchDataProduct(definition, params) {
-  // In this application we use data products that are published under
-  //  "ioxio" source only
-  const resp = await fetch(`/api/data-product/${definition}?source=ioxio`, {
-    method: "POST",
-    body: JSON.stringify(params),
-  })
-  if (!resp.ok) {
-    throw new Error("Failed to fetch a data product")
-  }
-  return await resp.json()
-}
-
 export async function getUser() {
   const resp = await fetch(`/api/me`, {
     method: "GET",
@@ -19,4 +6,20 @@ export async function getUser() {
     throw new Error("Failed to fetch the current user")
   }
   return await resp.json()
+}
+
+export async function fetchDataProduct(definition, params, consent = false) {
+  // There is a different API endpoint for data products that require a consent
+  const api = consent ? "/api/data-product-consent" : "/api/data-product"
+  // In this application we use data products that are published under
+  //  "ioxio" source only
+  const resp = await fetch(`${api}/${definition}?source=ioxio`, {
+    method: "POST",
+    body: JSON.stringify(params),
+  })
+  return {
+    ok: resp.ok,
+    status: resp.status,
+    data: await resp.json(),
+  }
 }

@@ -10,12 +10,14 @@ from fastapi.routing import APIRouter
 from httpx import Timeout
 from pyjwt_key_fetcher import AsyncKeyFetcher
 from starlette.middleware.sessions import SessionMiddleware
+from app.consents import router as consents_router
+from app.well_known import router as well_known_router
 
 from .settings import conf
 
 app = FastAPI()
 app.add_middleware(SessionMiddleware, secret_key=conf.SESSION_SECRET)
-router = APIRouter()
+api_router = APIRouter()
 
 oauth = OAuth()
 oauth.register(
@@ -32,7 +34,7 @@ oauth.register(
 key_fetcher = AsyncKeyFetcher()
 
 
-@router.get("/login")
+@api_router.get("/login")
 async def login(request: Request):
     """
     Start OpenID Connect login flow
@@ -44,7 +46,7 @@ async def login(request: Request):
     )
 
 
-@router.get("/auth")
+@api_router.get("/auth")
 async def auth(request: Request):
     """
     Route used as return URL in OpenID Connect flow
@@ -78,7 +80,7 @@ async def auth(request: Request):
     return response
 
 
-@router.get("/logout")
+@api_router.get("/logout")
 async def logout(id_token: Optional[str] = Cookie(default=None)):
     """
     Start logout in OpenID Connect flow
@@ -104,11 +106,10 @@ async def logout(id_token: Optional[str] = Cookie(default=None)):
         key="access_token",
         httponly=True,
     )
-
     return response
 
 
-@router.get("/me")
+@api_router.get("/me")
 async def user_profile(id_token: Optional[str] = Cookie(default=None)):
     """
     Return information about the currently authenticated user
@@ -129,7 +130,7 @@ async def user_profile(id_token: Optional[str] = Cookie(default=None)):
     }
 
 
-@router.post("/data-product/{data_product:path}")
+@api_router.post("/data-product/{data_product:path}")
 async def fetch_data_product(
     data_product: str,
     request: Request,
@@ -158,7 +159,9 @@ async def fetch_data_product(
     return JSONResponse(resp.json(), resp.status_code)
 
 
-app.include_router(router, prefix="/api")
+api_router.include_router(consents_router)
+app.include_router(api_router, prefix="/api")
+app.include_router(well_known_router, prefix="/.well-known")
 
 
 def main():
