@@ -1,3 +1,4 @@
+import json
 import textwrap
 from base64 import urlsafe_b64decode, urlsafe_b64encode
 from functools import cached_property
@@ -69,12 +70,30 @@ class RsaPrivateKey(SecretStr):
         return unsigned_int_to_urlsafe_b64(e)
 
     @cached_property
+    def thumbprint(self):
+        """
+        JSON Web Key (JWK) Thumbprint of the key (see RFC 7638).
+        """
+        json_object = json.dumps(
+            {
+                "kty": self.kty,
+                "n": self.n,
+                "e": self.e,
+            },
+            sort_keys=True,
+            separators=(",", ":"),
+            ensure_ascii=False,
+        ).encode("utf-8")
+        raw_hash = sha256(json_object).digest()
+        return urlsafe_b64encode(raw_hash).decode().rstrip("=")
+
+    @cached_property
     def kid(self):
         from app.settings import conf
 
         if conf.PRIVATE_KEY_ID:
             return conf.PRIVATE_KEY_ID
-        return sha256(f"rsa:{self.e}:{self.n}".encode()).hexdigest()[:32]
+        return self.thumbprint
 
     @cached_property
     def public_pem(self):
@@ -87,11 +106,15 @@ class RsaPrivateKey(SecretStr):
     def alg(self):
         return "RS256"
 
+    @property
+    def kty(self):
+        return "RSA"
+
     @cached_property
     def jwk(self):
         return {
             "kid": self.kid,
-            "kty": "RSA",
+            "kty": self.kty,
             "use": "sig",
             "alg": self.alg,
             "n": self.n,
