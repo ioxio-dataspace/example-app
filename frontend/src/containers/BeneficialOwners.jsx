@@ -117,8 +117,8 @@ export default function BeneficialOwners() {
           . For example, you can revoke it.
         </p>
         <p>
-          Data about beneficial owners is a stub, but it's fetched from{" "}
-          <DataProductLink definition={DEFINITION} />
+          This is mock data generated for demo purposes only. It's fetched automatically
+          from <DataProductLink definition={DEFINITION} />
         </p>
       </div>
     </Box>

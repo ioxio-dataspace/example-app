@@ -73,8 +73,8 @@ export default function PersonDetails() {
       <div>
         <p>User profile data is available only for authenticated users</p>
         <p>
-          Profile data is based on an email and fetched automatically from{" "}
-          <DataProductLink definition={DEFINITION} />
+          Profile data is fake data generated uniquely for the given email address. It's
+          fetched automatically from <DataProductLink definition={DEFINITION} />
         </p>
       </div>
     </Box>
