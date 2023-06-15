@@ -123,7 +123,7 @@ async def user_profile(id_token: Optional[str] = Cookie(default=None)):
         )
         return {
             "loggedIn": True,
-            "email": token["email"],
+            "email": token.get("email"),
         }
     return {
         "loggedIn": False,
