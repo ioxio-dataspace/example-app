@@ -1,5 +1,5 @@
 import secrets
-from typing import Optional
+from typing import Optional, Set
 
 from app.keys import RsaPrivateKey
 from pydantic import BaseSettings
@@ -18,6 +18,8 @@ class Settings(BaseSettings):
 
     # The base URL to Product Gateway
     PRODUCT_GATEWAY_URL: str = "https://gateway.sandbox.ioxio-dataspace.com"
+    # Response headers from Product Gateway that gets forwarded in the response
+    PRODUCT_GATEWAY_FORWARDED_HEADERS: Set[str] = {"x-powered-by", "server-timing"}
 
     # The base URL to Consent Portal
     CONSENT_PORTAL_URL: str = "https://consent.sandbox.ioxio-dataspace.com"

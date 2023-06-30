@@ -187,4 +187,9 @@ async def fetch_data_product(
             headers=headers,
             timeout=30,
         )
-    return JSONResponse(resp.json(), resp.status_code)
+        forwarded_headers = {
+            header: value
+            for header, value in resp.headers.items()
+            if header in conf.PRODUCT_GATEWAY_FORWARDED_HEADERS
+        }
+    return JSONResponse(resp.json(), resp.status_code, headers=forwarded_headers)
