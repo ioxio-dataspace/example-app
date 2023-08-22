@@ -2,6 +2,8 @@ from typing import Optional
 
 import httpx
 import jwt
+from app.consents import router as consents_router
+from app.well_known import router as well_known_router
 from authlib.common.urls import add_params_to_uri
 from authlib.integrations.starlette_client import OAuth, OAuthError
 from fastapi import Cookie, FastAPI, HTTPException, Query, Request
@@ -10,8 +12,6 @@ from fastapi.routing import APIRouter
 from httpx import Timeout
 from pyjwt_key_fetcher import AsyncKeyFetcher
 from starlette.middleware.sessions import SessionMiddleware
-from app.consents import router as consents_router
-from app.well_known import router as well_known_router
 
 from .settings import conf
 
