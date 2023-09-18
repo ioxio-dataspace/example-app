@@ -5,7 +5,7 @@ import { fetchDataProduct, getUser } from "../utils"
 import DataProductLink from "../components/DataProductLink"
 import conf from "../settings"
 
-const DEFINITION = "draft/NSG/Agent/LegalEntity/NonListedCompany/BeneficialOwners"
+const DEFINITION = "NSG/Agent/LegalEntity/NonListedCompany/BeneficialOwners_v1.0"
 // in this app we will just use the hardcoded data as a parameter
 const COMPANY_ID = "5590379409"
 

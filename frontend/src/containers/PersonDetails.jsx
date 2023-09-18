@@ -4,7 +4,7 @@ import LoginForm from "../components/LoginForm"
 import { fetchDataProduct, getUser } from "../utils"
 import DataProductLink from "../components/DataProductLink"
 
-const DEFINITION = "draft/Person/Details"
+const DEFINITION = "Person/Details_v1.0"
 
 export default function PersonDetails() {
   const [user, setUser] = useState({ loggedIn: false })
