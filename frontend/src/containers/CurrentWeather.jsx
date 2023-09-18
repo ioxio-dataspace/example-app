@@ -4,7 +4,7 @@ import WeatherData from "../components/WeatherData"
 import DataProductLink from "../components/DataProductLink"
 import { fetchDataProduct } from "../utils"
 
-const DEFINITION = "draft/Weather/Current/Metric"
+const DEFINITION = "Weather/Current/Metric_v1.0"
 const LOCATIONS = {
   Helsinki: [60.1699, 24.9384],
   Tokyo: [35.6762, 139.6503],
