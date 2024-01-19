@@ -132,6 +132,8 @@ async def get_consent_verification_url(dsi: str, sub: str) -> Optional[str]:
     async with httpx.AsyncClient() as client:
         resp = await client.post(url, json=payload, headers=headers, timeout=30)
     data = resp.json()
+    print(f"{resp.status_code=}")
+    print(f"{data=}")
     if data.get("type") == "requestUserConsent":
         return data["requestUrl"]
     return None
