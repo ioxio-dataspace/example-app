@@ -111,6 +111,8 @@ async def fetch_consent_token(dsi: str, sub: str) -> Optional[str]:
     async with httpx.AsyncClient() as client:
         resp = await client.post(url, json=payload, headers=headers, timeout=30)
     data = resp.json()
+    print(f"{resp.status_code=}")
+    print(f"{data=}")
     if data.get("type") == "consentGranted":
         return data["consentToken"]
     else:
@@ -194,4 +196,5 @@ async def fetch_data_product(
             for header, value in resp.headers.items()
             if header in conf.PRODUCT_GATEWAY_FORWARDED_HEADERS
         }
+        forwarded_headers["consent-token"] = consent_token
     return JSONResponse(resp.json(), resp.status_code, headers=forwarded_headers)
