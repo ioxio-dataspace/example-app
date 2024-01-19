@@ -1,12 +1,13 @@
 import time
 from functools import lru_cache
+from json import JSONDecodeError
 from typing import Optional
 
 import httpx
 import jwt
 from app.settings import conf
 from fastapi import APIRouter, Cookie, HTTPException, Query, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 from pyjwt_key_fetcher import AsyncKeyFetcher
 from pyjwt_key_fetcher.errors import JWTKeyFetcherError
 
@@ -196,5 +197,11 @@ async def fetch_data_product(
             for header, value in resp.headers.items()
             if header in conf.PRODUCT_GATEWAY_FORWARDED_HEADERS
         }
-        forwarded_headers["consent-token"] = consent_token
-    return JSONResponse(resp.json(), resp.status_code, headers=forwarded_headers)
+
+    forwarded_headers["consent-token"] = consent_token
+    forwarded_headers["id-token"] = id_token
+
+    try:
+        return JSONResponse(resp.json(), resp.status_code, headers=forwarded_headers)
+    except JSONDecodeError:
+        return Response(resp.content, resp.status_code, headers=forwarded_headers)
