@@ -13,7 +13,7 @@ export async function fetchDataProduct(definition, params, consent = false) {
   const api = consent ? "/api/data-product-consent" : "/api/data-product"
   // In this application we use data products that are published under
   //  "ioxio" source only
-  const resp = await fetch(`${api}/${definition}?source=ioxio`, {
+  const resp = await fetch(`${api}/${definition}?source=staffpoint_demo`, {
     method: "POST",
     body: JSON.stringify(params),
   })
