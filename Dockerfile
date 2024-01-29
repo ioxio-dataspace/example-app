@@ -13,7 +13,7 @@ RUN : \
 
 # ---- RUNTIME ENVIRONMENT ----- #
 
-FROM python:3.10-slim as runtime
+FROM python:3.11-slim as runtime
 
 ENV \
     PATH="/opt/poetry/bin:$PATH" \

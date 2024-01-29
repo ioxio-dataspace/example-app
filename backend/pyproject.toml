@@ -7,7 +7,7 @@ packages = [{include = "app", from = "."}]
 license = "BSD-3-Clause"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.11"
 fastapi = "^0.98.0"
 uvicorn = {version = "^0.22.0", extras = ["standard"]}
 Authlib = "^1.2.1"
