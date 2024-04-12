@@ -86,6 +86,12 @@ body,
   justify-content: end;
 }
 
+.nav-link {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .nav-logo {
   width: 2rem;
 }
