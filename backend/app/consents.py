@@ -17,6 +17,17 @@ class MissingConsent(Exception):
     pass
 
 
+async def get_product_gateway_url(client: httpx.AsyncClient):
+    """
+    Get the product_gateway_url from the dataspace configuration for a given dataspace domain
+    """
+    resp = await client.get(
+        f"https://{conf.DATASPACE_DOMAIN}/.well-known/dataspace/dataspace-configuration.json"
+    )
+    dataspace_configuration = resp.json()
+    return dataspace_configuration.get("product_gateway_url")
+
+
 @lru_cache(maxsize=1)
 def get_key_fetcher() -> AsyncKeyFetcher:
     """
@@ -172,7 +183,6 @@ async def fetch_data_product(
             },
             status_code=403,
         )
-
     body = await request.json()
     headers = {
         "x-consent-token": consent_token,
@@ -180,8 +190,14 @@ async def fetch_data_product(
     }
     # Fetch data product
     async with httpx.AsyncClient() as client:
+        try:
+            product_gateway_url = await get_product_gateway_url(client)
+        except httpx.HTTPError as exc:
+            raise HTTPException(
+                400, f"Error fetching datasapce configuration from {exc.request.url}"
+            )
         resp = await client.post(
-            f"{conf.PRODUCT_GATEWAY_URL}/{data_product}",
+            f"{product_gateway_url}/{data_product}",
             params={"source": source},
             json=body,
             headers=headers,

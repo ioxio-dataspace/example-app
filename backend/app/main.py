@@ -2,7 +2,9 @@ from typing import Optional
 
 import httpx
 import jwt
+from app.consents import get_product_gateway_url
 from app.consents import router as consents_router
+from app.settings import conf
 from app.well_known import router as well_known_router
 from authlib.common.urls import add_params_to_uri
 from authlib.integrations.starlette_client import OAuth, OAuthError
@@ -12,8 +14,6 @@ from fastapi.routing import APIRouter
 from httpx import Timeout
 from pyjwt_key_fetcher import AsyncKeyFetcher
 from starlette.middleware.sessions import SessionMiddleware
-
-from .settings import conf
 
 app = FastAPI()
 app.add_middleware(SessionMiddleware, secret_key=conf.SESSION_SECRET)
@@ -143,14 +143,21 @@ async def fetch_data_product(
     Some requests to the Product Gateway require authentication of
     the application, thus we route all the request through the backend.
     """
+
     body = await request.json()
     headers = {}
     if id_token:
         headers["authorization"] = f"Bearer {id_token}"
 
     async with httpx.AsyncClient() as client:
+        try:
+            product_gateway_url = await get_product_gateway_url(client)
+        except httpx.HTTPError as exc:
+            raise HTTPException(
+                400, f"Error fetching datasapce configuration from {exc.request.url}"
+            )
         resp = await client.post(
-            f"{conf.PRODUCT_GATEWAY_URL}/{data_product}",
+            f"{product_gateway_url}/{data_product}",
             params={"source": source},
             json=body,
             headers=headers,

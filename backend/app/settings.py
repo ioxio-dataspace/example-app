@@ -16,8 +16,6 @@ class Settings(BaseSettings):
     OIDC_SCOPES: str = "openid"
     OIDC_ACR_VALUES: str = "fake-auth"
 
-    # The base URL to Product Gateway
-    PRODUCT_GATEWAY_URL: str = "https://gateway.sandbox.ioxio-dataspace.com"
     # Response headers from Product Gateway that gets forwarded in the response
     PRODUCT_GATEWAY_FORWARDED_HEADERS: Set[str] = {"x-powered-by", "server-timing"}
 
