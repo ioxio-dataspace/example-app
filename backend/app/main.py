@@ -16,17 +16,6 @@ from httpx import Timeout
 from pyjwt_key_fetcher import AsyncKeyFetcher
 from starlette.middleware.sessions import SessionMiddleware
 
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    await register_oauth()
-    yield
-
-
-app = FastAPI(lifespan=lifespan)
-app.add_middleware(SessionMiddleware, secret_key=conf.SESSION_SECRET)
-api_router = APIRouter()
-
 key_fetcher = AsyncKeyFetcher()
 oauth = OAuth()
 
@@ -54,10 +43,28 @@ async def register_oauth():
     )
 
 
-@api_router.get("/dataspace-configuration")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await register_oauth()
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
+app.add_middleware(SessionMiddleware, secret_key=conf.SESSION_SECRET)
+api_router = APIRouter()
+
+
+@api_router.get("/settings")
 async def get_settings():
     dataspace_configuration = await get_dataspace_configuration()
-    return {"dataspaceBaseDomain": dataspace_configuration["dataspace_base_domain"]}
+    dataspace_base_domain = dataspace_configuration["dataspace_base_domain"]
+    consent_provider = dataspace_configuration["consent_providers"][0]
+    consent_provide_base_url = consent_provider["base_url"]
+    return {
+        "dataspaceBaseUrl": f"https://{dataspace_base_domain}",
+        "consentPortalUrl": consent_provide_base_url,
+        "definitionViewerUrl": f"https://definitions.{dataspace_base_domain}",
+    }
 
 
 @api_router.get("/login")

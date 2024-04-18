@@ -7,9 +7,10 @@ import DataspaceConfigurationContext from "../context/dataspaceConfigurationCont
 
 function App() {
   const [dataspaceConfiguration, setDataspaceConfiguration] = useState({
-    dataspaceBaseDomain: "sandbox.ioxio-dataspace.com",
+    dataspaceBaseUrl: "https://sandbox.ioxio-dataspace.com",
+    consentPortalUrl: "https://consent.sandbox.ioxio-dataspace.com",
+    definitionViewerUrl: "https://definitions.sandbox.ioxio-datasapce.com",
   })
-
   useEffect(() => {
     async function fetchData() {
       const data = await getDataspaceConfiguration()

@@ -16,7 +16,6 @@ export default function BeneficialOwners() {
   const [verifyConsentUrl, setVerifyConsentUrl] = useState("")
 
   const dataSpaceConfiguration = useContext(dataspaceConfigurationContext)
-  const linkToConsentPortal = `https://consent.${dataSpaceConfiguration.dataspaceBaseDomain}`
 
   // fetch user on page load
   useEffect(() => {
@@ -115,7 +114,7 @@ export default function BeneficialOwners() {
         </p>
         <p>
           You can manage your consents at{" "}
-          <a href={linkToConsentPortal} target="_blank">
+          <a href={dataSpaceConfiguration.consentPortalUrl} target="_blank">
             Consent Portal
           </a>
           . For example, you can revoke it.
