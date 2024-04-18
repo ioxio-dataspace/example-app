@@ -4,6 +4,7 @@ from typing import Optional
 
 import httpx
 import jwt
+from app.dataspace_configuration import get_dataspace_configuration
 from app.settings import conf
 from fastapi import APIRouter, Cookie, HTTPException, Query, Request
 from fastapi.responses import JSONResponse
@@ -15,17 +16,6 @@ router = APIRouter()
 
 class MissingConsent(Exception):
     pass
-
-
-async def get_product_gateway_url(client: httpx.AsyncClient):
-    """
-    Get the product_gateway_url from the dataspace configuration for a given dataspace domain
-    """
-    resp = await client.get(
-        f"https://{conf.DATASPACE_DOMAIN}/.well-known/dataspace/dataspace-configuration.json"
-    )
-    dataspace_configuration = resp.json()
-    return dataspace_configuration.get("product_gateway_url")
 
 
 @lru_cache(maxsize=1)
@@ -136,11 +126,14 @@ async def get_consent_verification_url(dsi: str, sub: str) -> Optional[str]:
     :param sub: Subject of consent
     :return: URL to verify a consent in Consent Portal
     """
-    url = f"{conf.CONSENT_PORTAL_URL}/Consent/RequestConsents"
     cr_token = create_consent_request_token(sub)
     headers = {"X-Consent-Request-Token": cr_token}
     payload = {"consentRequests": [{"dataSource": dsi, "required": True}]}
     async with httpx.AsyncClient() as client:
+        dataspace_configuration = await get_dataspace_configuration()
+        consent_provider = dataspace_configuration["consent_providers"][0]
+        consent_provide_base_url = consent_provider["base_url"]
+        url = f"{consent_provide_base_url}/Consent/RequestConsents"
         resp = await client.post(url, json=payload, headers=headers, timeout=30)
     data = resp.json()
     if data.get("type") == "requestUserConsent":
@@ -190,12 +183,10 @@ async def fetch_data_product(
     }
     # Fetch data product
     async with httpx.AsyncClient() as client:
-        try:
-            product_gateway_url = await get_product_gateway_url(client)
-        except httpx.HTTPError as exc:
-            raise HTTPException(
-                400, f"Error fetching datasapce configuration from {exc.request.url}"
-            )
+
+        dataspace_configuration = await get_dataspace_configuration()
+        product_gateway_url = dataspace_configuration["product_gateway_url"]
+
         resp = await client.post(
             f"{product_gateway_url}/{data_product}",
             params={"source": source},

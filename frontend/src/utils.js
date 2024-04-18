@@ -23,3 +23,11 @@ export async function fetchDataProduct(definition, params, consent = false) {
     data: await resp.json(),
   }
 }
+
+export async function getDataspaceConfiguration() {
+  const resp = await fetch("/api/dataspace-configuration")
+  if (!resp.ok) {
+    throw new Error("Failed to fetch the dataspace configuration")
+  }
+  return await resp.json()
+}
