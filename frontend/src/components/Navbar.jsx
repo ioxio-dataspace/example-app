@@ -1,4 +1,4 @@
-import github from "../assets/github.svg"
+import GitHubLogo from "../assets/github.svg"
 
 export default function Navbar() {
   return (
@@ -9,7 +9,7 @@ export default function Navbar() {
         rel="noreferrer"
         target="_blank"
       >
-        <img className="nav-logo" src={github} alt="View source in GitHub" />
+        <img className="nav-logo" src={GitHubLogo} alt="View source in GitHub" />
       </a>
     </div>
   )
