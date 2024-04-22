@@ -10,6 +10,7 @@ function App() {
     dataspaceBaseUrl: "https://sandbox.ioxio-dataspace.com",
     consentPortalUrl: "https://consent.sandbox.ioxio-dataspace.com",
     definitionViewerUrl: "https://definitions.sandbox.ioxio-datasapce.com",
+    dataspaceName: "IOXIO Sandbox",
   })
   useEffect(() => {
     async function fetchData() {
