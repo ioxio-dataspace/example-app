@@ -27,7 +27,6 @@ async def register_oauth():
     authentication_providers_end_user_base_url = authentication_providers_end_user[
         "base_url"
     ]
-
     oauth.register(
         name="login_portal",
         client_id=conf.OIDC_CLIENT_ID,
@@ -185,7 +184,6 @@ async def fetch_data_product(
     async with httpx.AsyncClient() as client:
         dataspace_configuration = await get_dataspace_configuration()
         product_gateway_url = dataspace_configuration["product_gateway_url"]
-
         resp = await client.post(
             f"{product_gateway_url}/{data_product}",
             params={"source": source},

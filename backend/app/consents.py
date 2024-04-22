@@ -183,10 +183,8 @@ async def fetch_data_product(
     }
     # Fetch data product
     async with httpx.AsyncClient() as client:
-
         dataspace_configuration = await get_dataspace_configuration()
         product_gateway_url = dataspace_configuration["product_gateway_url"]
-
         resp = await client.post(
             f"{product_gateway_url}/{data_product}",
             params={"source": source},

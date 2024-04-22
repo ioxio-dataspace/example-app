@@ -20,7 +20,7 @@ async def get_dataspace_configuration():
             )
         except httpx.HTTPError as exc:
             raise HTTPException(
-                400, f"Error fetching dataspace configuration from {exc.request.url}"
+                500, f"Error fetching dataspace configuration from {exc.request.url}"
             )
     DATASPACE_CONFIGURATION = resp.json()
     return DATASPACE_CONFIGURATION

@@ -27,7 +27,7 @@ export async function fetchDataProduct(definition, params, consent = false) {
 export async function getDataspaceConfiguration() {
   const resp = await fetch("/api/settings")
   if (!resp.ok) {
-    throw new Error("Failed to fetch the dataspace domain")
+    throw new Error("Failed to fetch the dataspace configuration")
   }
   return await resp.json()
 }
