@@ -11,9 +11,9 @@ export default function DataProductLink({ definition }) {
       </a>{" "}
       data product published under <strong>ioxio</strong> source on{" "}
       <a href={dataSpaceConfiguration.dataspaceBaseUrl} target="_blank">
-        {dataSpaceConfiguration.dataspaceName.trim()}
-      </a>{" "}
-      dataspace.
+        {dataSpaceConfiguration.dataspaceName}
+      </a>
+      .
     </span>
   )
 }
