@@ -15,6 +15,7 @@ itsdangerous = "^2.1.2"
 httpx = "^0.24.1"
 pyjwt = "^2.7.0"
 pyjwt-key-fetcher = "^0.5.0"
+async-lru = "^2.0.4"
 
 [tool.poetry.scripts]
 dev = "app.main:main"

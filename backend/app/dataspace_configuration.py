@@ -1,17 +1,14 @@
 import httpx
 from app.settings import conf
+from async_lru import alru_cache
 from fastapi import HTTPException
 
-DATASPACE_CONFIGURATION = None
 
-
+@alru_cache(ttl=30 * 60)
 async def get_dataspace_configuration():
     """
     Fetch the dataspace configuration from the dataspace base domain
     """
-    global DATASPACE_CONFIGURATION
-    if DATASPACE_CONFIGURATION:
-        return DATASPACE_CONFIGURATION
 
     async with httpx.AsyncClient() as client:
         try:
@@ -22,5 +19,4 @@ async def get_dataspace_configuration():
             raise HTTPException(
                 500, f"Error fetching dataspace configuration from {exc.request.url}"
             )
-    DATASPACE_CONFIGURATION = resp.json()
-    return DATASPACE_CONFIGURATION
+    return resp.json()

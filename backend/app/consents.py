@@ -126,14 +126,13 @@ async def get_consent_verification_url(dsi: str, sub: str) -> Optional[str]:
     :param sub: Subject of consent
     :return: URL to verify a consent in Consent Portal
     """
+    dataspace_configuration = await get_dataspace_configuration()
+    consent_portal_url = dataspace_configuration["consent_providers"][0]["base_url"]
+    url = f"{consent_portal_url}/Consent/RequestConsents"
     cr_token = create_consent_request_token(sub)
     headers = {"X-Consent-Request-Token": cr_token}
     payload = {"consentRequests": [{"dataSource": dsi, "required": True}]}
     async with httpx.AsyncClient() as client:
-        dataspace_configuration = await get_dataspace_configuration()
-        consent_provider = dataspace_configuration["consent_providers"][0]
-        consent_provide_base_url = consent_provider["base_url"]
-        url = f"{consent_provide_base_url}/Consent/RequestConsents"
         resp = await client.post(url, json=payload, headers=headers, timeout=30)
     data = resp.json()
     if data.get("type") == "requestUserConsent":

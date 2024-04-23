@@ -22,19 +22,14 @@ oauth = OAuth()
 
 async def register_oauth():
     dataspace_configuration = await get_dataspace_configuration()
-    authentication_providers = dataspace_configuration["authentication_providers"]
-    authentication_providers_end_user = authentication_providers["end_user"]
-    authentication_providers_end_user_base_url = authentication_providers_end_user[
+    oidc_provider_url = dataspace_configuration["authentication_providers"]["end_user"][
         "base_url"
     ]
     oauth.register(
         name="login_portal",
         client_id=conf.OIDC_CLIENT_ID,
         client_secret=conf.OIDC_CLIENT_SECRET,
-        server_metadata_url=(
-            authentication_providers_end_user_base_url
-            + "/.well-known/openid-configuration"
-        ),
+        server_metadata_url=(oidc_provider_url + "/.well-known/openid-configuration"),
         client_kwargs={
             "scope": conf.OIDC_SCOPES,
             "timeout": Timeout(timeout=conf.OIDC_REQUEST_TIMEOUT),
