@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react"
+import Navbar from "../components/Navbar"
 import CurrentWeather from "./CurrentWeather"
 import PersonDetails from "./PersonDetails"
 import BeneficialOwners from "./BeneficialOwners"
@@ -23,6 +24,7 @@ function App() {
   return (
     <DataspaceConfigurationContext.Provider value={dataspaceConfiguration}>
       <div className="app">
+        <Navbar />
         <CurrentWeather />
         <PersonDetails />
         <BeneficialOwners />
