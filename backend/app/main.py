@@ -52,12 +52,10 @@ api_router = APIRouter()
 async def get_settings():
     dataspace_configuration = await get_dataspace_configuration()
     dataspace_base_domain = dataspace_configuration["dataspace_base_domain"]
-    consent_provider = dataspace_configuration["consent_providers"][0]
-    consent_provide_base_url = consent_provider["base_url"]
     return {
         "dataspaceBaseUrl": f"https://{dataspace_base_domain}",
-        "consentPortalUrl": consent_provide_base_url,
-        "definitionViewerUrl": f"https://definitions.{dataspace_base_domain}",
+        "consentPortalUrl": dataspace_configuration["consent_providers"][0]["base_url"],
+        "definitionViewerUrl": dataspace_configuration["definition_viewer_url"],
         "dataspaceName": dataspace_configuration["dataspace_name"],
     }
 
