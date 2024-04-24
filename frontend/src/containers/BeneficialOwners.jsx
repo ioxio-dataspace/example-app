@@ -3,7 +3,7 @@ import Box from "../components/Box"
 import LoginForm from "../components/LoginForm"
 import { fetchDataProduct, getUser } from "../utils"
 import DataProductLink from "../components/DataProductLink"
-import dataspaceConfigurationContext from "../context/dataspaceConfigurationContext"
+import DataspaceConfigurationContext from "../context/dataspaceConfigurationContext"
 
 const DEFINITION = "NSG/Agent/LegalEntity/NonListedCompany/BeneficialOwners_v1.0"
 // in this app we will just use the hardcoded data as a parameter
@@ -15,7 +15,7 @@ export default function BeneficialOwners() {
   const [isLoading, setIsLoading] = useState(false)
   const [verifyConsentUrl, setVerifyConsentUrl] = useState("")
 
-  const dataspaceConfiguration = useContext(dataspaceConfigurationContext)
+  const dataspaceConfiguration = useContext(DataspaceConfigurationContext)
 
   // fetch user on page load
   useEffect(() => {

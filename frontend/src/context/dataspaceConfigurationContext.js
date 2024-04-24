@@ -1,5 +1,5 @@
 import { createContext } from "react"
 
-const dataspaceConfigurationContext = createContext({})
+const DataspaceConfigurationContext = createContext({})
 
-export default dataspaceConfigurationContext
+export default DataspaceConfigurationContext
