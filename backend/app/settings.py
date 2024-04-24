@@ -6,34 +6,22 @@ from pydantic import BaseSettings
 
 
 class Settings(BaseSettings):
-    # The base URL to the login portal.
-    # You can find values for OIDC_PROVIDER_URL and PRODUCT_GATEWAY_URL in the
-    # dataspace configuration:
-    # https://sandbox.ioxio-dataspace.com/.well-known/dataspace/dataspace-configuration.json
-    # Find more information in the docs:
-    # https://well-known-docs.sandbox.ioxio-dataspace.com/dataspace-configuration.html
-    OIDC_PROVIDER_URL: str = "https://login.sandbox.ioxio-dataspace.com"
-    OIDC_SCOPES: str = "openid"
-    OIDC_ACR_VALUES: str = "fake-auth"
-
-    # The base URL to Product Gateway
-    PRODUCT_GATEWAY_URL: str = "https://gateway.sandbox.ioxio-dataspace.com"
-    # Response headers from Product Gateway that gets forwarded in the response
-    PRODUCT_GATEWAY_FORWARDED_HEADERS: Set[str] = {"x-powered-by", "server-timing"}
-
-    # The base URL to Consent Portal
-    CONSENT_PORTAL_URL: str = "https://consent.sandbox.ioxio-dataspace.com"
-    # Your party configuration domain
-    PARTY_CONFIGURATION_DOMAIN: str = "example-app.demos.ioxio.dev"
-    # Validity time of consent request token
-    CONSENT_REQUEST_TOKEN_VALID_SECONDS: int = 3600
+    # The dataspace base domain
+    DATASPACE_BASE_DOMAIN: str = "sandbox.ioxio-dataspace.com"
 
     # The client ID and client secret for the app you created in the developer portal
     OIDC_CLIENT_ID: str = ""
     OIDC_CLIENT_SECRET: str = ""
+    OIDC_SCOPES: str = "openid"
+    OIDC_ACR_VALUES: str = "fake-auth"
 
-    # The dataspace domain you want to request consents for
-    DATASPACE_DOMAIN: str = "sandbox.ioxio-dataspace.com"
+    # Response headers from Product Gateway that gets forwarded in the response
+    PRODUCT_GATEWAY_FORWARDED_HEADERS: Set[str] = {"x-powered-by", "server-timing"}
+
+    # Your party configuration domain
+    PARTY_CONFIGURATION_DOMAIN: str = "example-app.demos.ioxio.dev"
+    # Validity time of consent request token
+    CONSENT_REQUEST_TOKEN_VALID_SECONDS: int = 3600
 
     # Secret used to protect the session
     # By default this generates a new secret on each startup. In an actual deployment

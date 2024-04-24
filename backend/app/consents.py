@@ -4,6 +4,7 @@ from typing import Optional
 
 import httpx
 import jwt
+from app.dataspace_configuration import get_dataspace_configuration
 from app.settings import conf
 from fastapi import APIRouter, Cookie, HTTPException, Query, Request
 from fastapi.responses import JSONResponse
@@ -125,7 +126,9 @@ async def get_consent_verification_url(dsi: str, sub: str) -> Optional[str]:
     :param sub: Subject of consent
     :return: URL to verify a consent in Consent Portal
     """
-    url = f"{conf.CONSENT_PORTAL_URL}/Consent/RequestConsents"
+    dataspace_configuration = await get_dataspace_configuration()
+    consent_portal_url = dataspace_configuration["consent_providers"][0]["base_url"]
+    url = f"{consent_portal_url}/Consent/RequestConsents"
     cr_token = create_consent_request_token(sub)
     headers = {"X-Consent-Request-Token": cr_token}
     payload = {"consentRequests": [{"dataSource": dsi, "required": True}]}
@@ -172,7 +175,6 @@ async def fetch_data_product(
             },
             status_code=403,
         )
-
     body = await request.json()
     headers = {
         "x-consent-token": consent_token,
@@ -180,8 +182,10 @@ async def fetch_data_product(
     }
     # Fetch data product
     async with httpx.AsyncClient() as client:
+        dataspace_configuration = await get_dataspace_configuration()
+        product_gateway_url = dataspace_configuration["product_gateway_url"]
         resp = await client.post(
-            f"{conf.PRODUCT_GATEWAY_URL}/{data_product}",
+            f"{product_gateway_url}/{data_product}",
             params={"source": source},
             json=body,
             headers=headers,

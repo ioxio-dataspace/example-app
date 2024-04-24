@@ -1,8 +1,11 @@
+from contextlib import asynccontextmanager
 from typing import Optional
 
 import httpx
 import jwt
 from app.consents import router as consents_router
+from app.dataspace_configuration import get_dataspace_configuration
+from app.settings import conf
 from app.well_known import router as well_known_router
 from authlib.common.urls import add_params_to_uri
 from authlib.integrations.starlette_client import OAuth, OAuthError
@@ -13,25 +16,48 @@ from httpx import Timeout
 from pyjwt_key_fetcher import AsyncKeyFetcher
 from starlette.middleware.sessions import SessionMiddleware
 
-from .settings import conf
+key_fetcher = AsyncKeyFetcher()
+oauth = OAuth()
 
-app = FastAPI()
+
+async def register_oauth():
+    dataspace_configuration = await get_dataspace_configuration()
+    oidc_provider_url = dataspace_configuration["authentication_providers"]["end_user"][
+        "base_url"
+    ]
+    oauth.register(
+        name="login_portal",
+        client_id=conf.OIDC_CLIENT_ID,
+        client_secret=conf.OIDC_CLIENT_SECRET,
+        server_metadata_url=(oidc_provider_url + "/.well-known/openid-configuration"),
+        client_kwargs={
+            "scope": conf.OIDC_SCOPES,
+            "timeout": Timeout(timeout=conf.OIDC_REQUEST_TIMEOUT),
+        },
+    )
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await register_oauth()
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
 app.add_middleware(SessionMiddleware, secret_key=conf.SESSION_SECRET)
 api_router = APIRouter()
 
-oauth = OAuth()
-oauth.register(
-    name="login_portal",
-    client_id=conf.OIDC_CLIENT_ID,
-    client_secret=conf.OIDC_CLIENT_SECRET,
-    server_metadata_url=(conf.OIDC_PROVIDER_URL + "/.well-known/openid-configuration"),
-    client_kwargs={
-        "scope": conf.OIDC_SCOPES,
-        "timeout": Timeout(timeout=conf.OIDC_REQUEST_TIMEOUT),
-    },
-)
 
-key_fetcher = AsyncKeyFetcher()
+@api_router.get("/settings")
+async def get_settings():
+    dataspace_configuration = await get_dataspace_configuration()
+    dataspace_base_domain = dataspace_configuration["dataspace_base_domain"]
+    return {
+        "dataspaceBaseUrl": f"https://{dataspace_base_domain}",
+        "consentPortalUrl": dataspace_configuration["consent_providers"][0]["base_url"],
+        "definitionViewerUrl": dataspace_configuration["definition_viewer_url"],
+        "dataspaceName": dataspace_configuration["dataspace_name"],
+    }
 
 
 @api_router.get("/login")
@@ -143,14 +169,17 @@ async def fetch_data_product(
     Some requests to the Product Gateway require authentication of
     the application, thus we route all the request through the backend.
     """
+
     body = await request.json()
     headers = {}
     if id_token:
         headers["authorization"] = f"Bearer {id_token}"
 
     async with httpx.AsyncClient() as client:
+        dataspace_configuration = await get_dataspace_configuration()
+        product_gateway_url = dataspace_configuration["product_gateway_url"]
         resp = await client.post(
-            f"{conf.PRODUCT_GATEWAY_URL}/{data_product}",
+            f"{product_gateway_url}/{data_product}",
             params={"source": source},
             json=body,
             headers=headers,

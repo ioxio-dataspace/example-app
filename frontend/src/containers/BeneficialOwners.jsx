@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useContext } from "react"
 import Box from "../components/Box"
 import LoginForm from "../components/LoginForm"
 import { fetchDataProduct, getUser } from "../utils"
 import DataProductLink from "../components/DataProductLink"
-import conf from "../settings"
+import DataspaceConfigurationContext from "../context/dataspaceConfigurationContext"
 
 const DEFINITION = "NSG/Agent/LegalEntity/NonListedCompany/BeneficialOwners_v1.0"
 // in this app we will just use the hardcoded data as a parameter
@@ -14,6 +14,9 @@ export default function BeneficialOwners() {
   const [ownersData, setOwnersData] = useState({ shareholders: [] })
   const [isLoading, setIsLoading] = useState(false)
   const [verifyConsentUrl, setVerifyConsentUrl] = useState("")
+
+  const dataspaceConfiguration = useContext(DataspaceConfigurationContext)
+
   // fetch user on page load
   useEffect(() => {
     setIsLoading(true)
@@ -111,7 +114,7 @@ export default function BeneficialOwners() {
         </p>
         <p>
           You can manage your consents at{" "}
-          <a href={conf.CONSENT_PORTAL_URL} target="_blank">
+          <a href={dataspaceConfiguration.consentPortalUrl} target="_blank">
             Consent Portal
           </a>
           . For example, you can revoke it.
