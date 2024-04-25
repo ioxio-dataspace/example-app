@@ -19,7 +19,6 @@ on:
   push:
     branches:
       - "main"
-      - "hotfix/crash"
 
 name: Build and Deploy to Cloud Run
 env:
