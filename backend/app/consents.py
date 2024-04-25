@@ -100,7 +100,7 @@ def make_dsi_uri(definition: str, source: str) -> str:
     :param source: Source that data product is published under
     :return: Data Source Identifier
     """
-    return f"dpp://{source}@{conf.DATASPACE_DOMAIN}/{definition}"
+    return f"dpp://{source}@{conf.DATASPACE_BASE_DOMAIN}/{definition}"
 
 
 async def fetch_consent_token(dsi: str, sub: str) -> Optional[str]:
