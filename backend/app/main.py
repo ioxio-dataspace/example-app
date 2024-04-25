@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+from logging import getLogger
 from typing import Optional
 
 import httpx
@@ -21,6 +22,7 @@ from starlette.middleware.sessions import SessionMiddleware
 
 key_fetcher = AsyncKeyFetcher()
 oauth = OAuth()
+logger = getLogger(__name__)
 
 
 async def register_oauth():
@@ -142,15 +144,19 @@ async def user_profile(id_token: Optional[str] = Cookie(default=None)):
     """
     if id_token:
         key_entry = await key_fetcher.get_key(id_token)
-        token = jwt.decode(
-            id_token,
-            audience=conf.OIDC_CLIENT_ID,
-            **key_entry,
-        )
-        return {
-            "loggedIn": True,
-            "email": token["email"],
-        }
+        try:
+            token = jwt.decode(
+                id_token,
+                audience=conf.OIDC_CLIENT_ID,
+                **key_entry,
+            )
+            return {
+                "loggedIn": True,
+                "email": token["email"],
+            }
+        except jwt.PyJWTError:
+            logger.exception("Failed to decode JWT token")
+            pass
     return {
         "loggedIn": False,
     }
