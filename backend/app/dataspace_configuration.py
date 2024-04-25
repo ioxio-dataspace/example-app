@@ -28,3 +28,9 @@ async def get_oidc_provider_url() -> str:
         "base_url"
     ]
     return oidc_provider_url
+
+
+async def get_consent_portal_url() -> str:
+    dataspace_configuration = await get_dataspace_configuration()
+    consent_portal_url = dataspace_configuration["consent_providers"][0]["base_url"]
+    return consent_portal_url

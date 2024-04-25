@@ -4,6 +4,7 @@ from typing import Optional
 import httpx
 import jwt
 from app.dataspace_configuration import (
+    get_consent_portal_url,
     get_dataspace_configuration,
     get_oidc_provider_url,
 )
@@ -67,6 +68,7 @@ async def validate_token(id_token: str) -> dict:
 async def create_consent_request_token(sub) -> str:
     key = conf.PRIVATE_KEY
     oidc_provider_url = await get_oidc_provider_url()
+    consent_portal_url = await get_consent_portal_url()
 
     now = int(time.time())
     crt = {
@@ -76,7 +78,7 @@ async def create_consent_request_token(sub) -> str:
         "acr": conf.OIDC_ACR_VALUES,
         "app": conf.OIDC_CLIENT_ID,
         "appiss": oidc_provider_url,
-        "aud": conf.CONSENT_PORTAL_URL,
+        "aud": consent_portal_url,
         "exp": now + conf.CONSENT_REQUEST_TOKEN_VALID_SECONDS,
         "iat": now,
     }
@@ -110,7 +112,9 @@ async def fetch_consent_token(dsi: str, sub: str) -> Optional[str]:
     :param sub: Subject for the consent
     :return: Consent Token if it has been granted already, None otherwise
     """
-    url = f"{conf.CONSENT_PORTAL_URL}/Consent/GetToken"
+    consent_portal_url = await get_consent_portal_url()
+
+    url = f"{consent_portal_url}/Consent/GetToken"
     cr_token = await create_consent_request_token(sub)
     headers = {"X-Consent-Request-Token": cr_token}
     payload = {"dataSource": dsi}
@@ -131,8 +135,7 @@ async def get_consent_verification_url(dsi: str, sub: str) -> Optional[str]:
     :param sub: Subject of consent
     :return: URL to verify a consent in Consent Portal
     """
-    dataspace_configuration = await get_dataspace_configuration()
-    consent_portal_url = dataspace_configuration["consent_providers"][0]["base_url"]
+    consent_portal_url = await get_consent_portal_url()
     url = f"{consent_portal_url}/Consent/RequestConsents"
     cr_token = await create_consent_request_token(sub)
     headers = {"X-Consent-Request-Token": cr_token}
