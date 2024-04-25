@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+from logging import getLogger
 from typing import Optional
 
 import httpx
@@ -15,7 +16,6 @@ from fastapi.routing import APIRouter
 from httpx import Timeout
 from pyjwt_key_fetcher import AsyncKeyFetcher
 from starlette.middleware.sessions import SessionMiddleware
-from logging import getLogger
 
 key_fetcher = AsyncKeyFetcher()
 oauth = OAuth()
