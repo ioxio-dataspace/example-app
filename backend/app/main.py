@@ -4,7 +4,10 @@ from typing import Optional
 import httpx
 import jwt
 from app.consents import router as consents_router
-from app.dataspace_configuration import get_dataspace_configuration
+from app.dataspace_configuration import (
+    get_dataspace_configuration,
+    get_oidc_provider_url,
+)
 from app.settings import conf
 from app.well_known import router as well_known_router
 from authlib.common.urls import add_params_to_uri
@@ -21,10 +24,7 @@ oauth = OAuth()
 
 
 async def register_oauth():
-    dataspace_configuration = await get_dataspace_configuration()
-    oidc_provider_url = dataspace_configuration["authentication_providers"]["end_user"][
-        "base_url"
-    ]
+    oidc_provider_url = await get_oidc_provider_url()
     oauth.register(
         name="login_portal",
         client_id=conf.OIDC_CLIENT_ID,

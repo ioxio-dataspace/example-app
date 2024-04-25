@@ -20,3 +20,11 @@ async def get_dataspace_configuration():
                 500, f"Error fetching dataspace configuration from {exc.request.url}"
             )
     return resp.json()
+
+
+async def get_oidc_provider_url() -> str:
+    dataspace_configuration = await get_dataspace_configuration()
+    oidc_provider_url = dataspace_configuration["authentication_providers"]["end_user"][
+        "base_url"
+    ]
+    return oidc_provider_url
