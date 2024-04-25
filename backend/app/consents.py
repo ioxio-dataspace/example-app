@@ -74,7 +74,7 @@ async def create_consent_request_token(sub) -> str:
     crt = {
         "iss": f"https://{conf.PARTY_CONFIGURATION_DOMAIN}",
         "sub": sub,
-        "subiss": get_oidc_provider_url(),
+        "subiss": oidc_provider_url,
         "acr": conf.OIDC_ACR_VALUES,
         "app": conf.OIDC_CLIENT_ID,
         "appiss": oidc_provider_url,
