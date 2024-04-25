@@ -1,11 +1,15 @@
 import time
-from functools import lru_cache
 from typing import Optional
 
 import httpx
 import jwt
-from app.dataspace_configuration import get_dataspace_configuration
+from app.dataspace_configuration import (
+    get_consent_portal_url,
+    get_dataspace_configuration,
+    get_oidc_provider_url,
+)
 from app.settings import conf
+from async_lru import alru_cache
 from fastapi import APIRouter, Cookie, HTTPException, Query, Request
 from fastapi.responses import JSONResponse
 from pyjwt_key_fetcher import AsyncKeyFetcher
@@ -18,12 +22,13 @@ class MissingConsent(Exception):
     pass
 
 
-@lru_cache(maxsize=1)
-def get_key_fetcher() -> AsyncKeyFetcher:
+@alru_cache(maxsize=1)
+async def get_key_fetcher() -> AsyncKeyFetcher:
     """
     Create and return a singleton instance of the AsyncKeyFetcher
     """
-    return AsyncKeyFetcher(valid_issuers=[conf.OIDC_PROVIDER_URL])
+    oidc_provider_url = await get_oidc_provider_url()
+    return AsyncKeyFetcher(valid_issuers=[oidc_provider_url])
 
 
 async def parse_token(id_token: Optional[str]) -> str:
@@ -48,30 +53,32 @@ async def validate_token(id_token: str) -> dict:
     raise: jwt.exceptions.InvalidTokenError If token is invalid
     """
     try:
-        key_entry = await get_key_fetcher().get_key(id_token)
+        key_entry = await (await get_key_fetcher()).get_key(id_token)
     except JWTKeyFetcherError as e:
         raise jwt.exceptions.InvalidTokenError from e
     return jwt.decode(
         id_token,
         verify=True,
         audience=conf.OIDC_CLIENT_ID,
-        issuer=conf.OIDC_PROVIDER_URL,
+        issuer=await get_oidc_provider_url(),
         **key_entry,
     )
 
 
-def create_consent_request_token(sub) -> str:
+async def create_consent_request_token(sub) -> str:
     key = conf.PRIVATE_KEY
+    oidc_provider_url = await get_oidc_provider_url()
+    consent_portal_url = await get_consent_portal_url()
 
     now = int(time.time())
     crt = {
         "iss": f"https://{conf.PARTY_CONFIGURATION_DOMAIN}",
         "sub": sub,
-        "subiss": conf.OIDC_PROVIDER_URL,
+        "subiss": oidc_provider_url,
         "acr": conf.OIDC_ACR_VALUES,
         "app": conf.OIDC_CLIENT_ID,
-        "appiss": conf.OIDC_PROVIDER_URL,
-        "aud": conf.CONSENT_PORTAL_URL,
+        "appiss": oidc_provider_url,
+        "aud": consent_portal_url,
         "exp": now + conf.CONSENT_REQUEST_TOKEN_VALID_SECONDS,
         "iat": now,
     }
@@ -95,7 +102,7 @@ def make_dsi_uri(definition: str, source: str) -> str:
     :param source: Source that data product is published under
     :return: Data Source Identifier
     """
-    return f"dpp://{source}@{conf.DATASPACE_DOMAIN}/{definition}"
+    return f"dpp://{source}@{conf.DATASPACE_BASE_DOMAIN}/{definition}"
 
 
 async def fetch_consent_token(dsi: str, sub: str) -> Optional[str]:
@@ -105,8 +112,10 @@ async def fetch_consent_token(dsi: str, sub: str) -> Optional[str]:
     :param sub: Subject for the consent
     :return: Consent Token if it has been granted already, None otherwise
     """
-    url = f"{conf.CONSENT_PORTAL_URL}/Consent/GetToken"
-    cr_token = create_consent_request_token(sub)
+    consent_portal_url = await get_consent_portal_url()
+
+    url = f"{consent_portal_url}/Consent/GetToken"
+    cr_token = await create_consent_request_token(sub)
     headers = {"X-Consent-Request-Token": cr_token}
     payload = {"dataSource": dsi}
     async with httpx.AsyncClient() as client:
@@ -126,10 +135,9 @@ async def get_consent_verification_url(dsi: str, sub: str) -> Optional[str]:
     :param sub: Subject of consent
     :return: URL to verify a consent in Consent Portal
     """
-    dataspace_configuration = await get_dataspace_configuration()
-    consent_portal_url = dataspace_configuration["consent_providers"][0]["base_url"]
+    consent_portal_url = await get_consent_portal_url()
     url = f"{consent_portal_url}/Consent/RequestConsents"
-    cr_token = create_consent_request_token(sub)
+    cr_token = await create_consent_request_token(sub)
     headers = {"X-Consent-Request-Token": cr_token}
     payload = {"consentRequests": [{"dataSource": dsi, "required": True}]}
     async with httpx.AsyncClient() as client:
