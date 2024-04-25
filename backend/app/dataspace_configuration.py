@@ -24,9 +24,8 @@ async def get_dataspace_configuration():
 
 async def get_oidc_provider_url() -> str:
     dataspace_configuration = await get_dataspace_configuration()
-    oidc_provider_url = dataspace_configuration["authentication_providers"]["end_user"][
-        "base_url"
-    ]
+    auth_providers = dataspace_configuration["authentication_providers"]
+    oidc_provider_url = auth_providers["end_user"]["base_url"]
     return oidc_provider_url
 
 
