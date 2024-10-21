@@ -67,7 +67,7 @@ Before running the app locally, you have to:
    ACCESS_CONTROL_KEYS={"dpp://.../": "ABC123..."}
    ```
    Multiple keys can be set for separate DSIs by separating the pairs with commas. You
-   will also have to also set `ACCESS_CONTROL_SUB` to the group your application uses to
+   will also have to set `ACCESS_CONTROL_SUB` to the group your application uses to
    access the source.
 
 ### Pre-requisites
