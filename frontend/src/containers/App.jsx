@@ -10,7 +10,7 @@ function App() {
   const [dataspaceConfiguration, setDataspaceConfiguration] = useState({
     dataspaceBaseUrl: "https://sandbox.ioxio-dataspace.com",
     consentPortalUrl: "https://consent.sandbox.ioxio-dataspace.com",
-    definitionViewerUrl: "https://definitions.sandbox.ioxio-datasapce.com",
+    definitionViewerUrl: "https://definitions.sandbox.ioxio-dataspace.com",
     dataspaceName: "IOXIO Sandbox Dataspace",
   })
   useEffect(() => {
