@@ -18,7 +18,7 @@ export default function BatteryHealth() {
   })
   const [isLoading, setIsLoading] = useState(false)
 
-  // once we ensure user is logged in, fetch data product automatically
+  // fetch data product automatically
   useEffect(() => {
     ;(async () => {
       try {
