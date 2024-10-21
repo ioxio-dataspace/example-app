@@ -16,8 +16,6 @@ export async function fetchDataProduct(
 ) {
   // There is a different API endpoint for data products that require a consent
   const api = consent ? "/api/data-product-consent" : "/api/data-product"
-  // In this application we use data products that are published under
-  //  "ioxio" source only
   const resp = await fetch(`${api}/${definition}?source=${source}`, {
     method: "POST",
     body: JSON.stringify(params),
