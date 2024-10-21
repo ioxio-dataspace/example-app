@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar"
 import CurrentWeather from "./CurrentWeather"
 import PersonDetails from "./PersonDetails"
 import BeneficialOwners from "./BeneficialOwners"
+import BatteryHealth from "./BatteryHealth"
 import { getDataspaceConfiguration } from "../utils.js"
 import DataspaceConfigurationContext from "../context/dataspaceConfigurationContext"
 
@@ -28,6 +29,7 @@ function App() {
         <CurrentWeather />
         <PersonDetails />
         <BeneficialOwners />
+        <BatteryHealth />
       </div>
     </DataspaceConfigurationContext.Provider>
   )

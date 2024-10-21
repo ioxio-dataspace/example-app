@@ -5,10 +5,11 @@ import httpx
 import jwt
 from app.dataspace_configuration import (
     get_consent_portal_url,
-    get_dataspace_configuration,
     get_oidc_provider_url,
+    get_product_gateway_url,
 )
 from app.settings import conf
+from app.utils import make_dsi
 from async_lru import alru_cache
 from fastapi import APIRouter, Cookie, HTTPException, Query, Request
 from fastapi.responses import JSONResponse
@@ -95,16 +96,6 @@ async def create_consent_request_token(sub) -> str:
     return token
 
 
-def make_dsi_uri(definition: str, source: str) -> str:
-    """
-    Make Data Source Identifier
-    :param definition: Data Product Definition
-    :param source: Source that data product is published under
-    :return: Data Source Identifier
-    """
-    return f"dpp://{source}@{conf.DATASPACE_BASE_DOMAIN}/{definition}"
-
-
 async def fetch_consent_token(dsi: str, sub: str) -> Optional[str]:
     """
     Fetch Consent Token from Consent Portal
@@ -165,7 +156,7 @@ async def fetch_data_product(
     # Validate ID Token to find a user ID that we use as a "sub" for consent request
     sub = await parse_token(id_token)
 
-    dsi = make_dsi_uri(data_product, source)
+    dsi = make_dsi(conf.DATASPACE_BASE_DOMAIN, data_product, source)
 
     try:
         # Try to fetch a token from Consent Portal
@@ -190,8 +181,7 @@ async def fetch_data_product(
     }
     # Fetch data product
     async with httpx.AsyncClient() as client:
-        dataspace_configuration = await get_dataspace_configuration()
-        product_gateway_url = dataspace_configuration["product_gateway_url"]
+        product_gateway_url = await get_product_gateway_url()
         resp = await client.post(
             f"{product_gateway_url}/{data_product}",
             params={"source": source},

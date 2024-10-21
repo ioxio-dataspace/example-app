@@ -58,6 +58,12 @@ class Settings(BaseSettings):
     # kid
     PRIVATE_KEY_ID: Optional[str] = None
 
+    # Access control keys for different DSIs
+    ACCESS_CONTROL_KEYS: dict[str, str] = {}
+
+    # Group to request API keys with, must match access control keys
+    ACCESS_CONTROL_SUB: str = ""
+
     class Config:
         env_file = ".env"
 
