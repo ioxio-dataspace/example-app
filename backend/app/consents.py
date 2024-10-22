@@ -156,7 +156,7 @@ async def fetch_data_product(
     # Validate ID Token to find a user ID that we use as a "sub" for consent request
     sub = await parse_token(id_token)
 
-    dsi = make_dsi(conf.DATASPACE_BASE_DOMAIN, f"/{data_product}", source)
+    dsi = make_dsi(conf.DATASPACE_BASE_DOMAIN, data_product, source)
 
     try:
         # Try to fetch a token from Consent Portal

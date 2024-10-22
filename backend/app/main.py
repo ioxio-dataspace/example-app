@@ -188,7 +188,7 @@ async def fetch_data_product(
         product_gateway_url = await get_product_gateway_url()
 
         # If we have an access control key configured for the source, get an API token for the request
-        dsi = make_dsi(conf.DATASPACE_BASE_DOMAIN, f"/{data_product}", source)
+        dsi = make_dsi(conf.DATASPACE_BASE_DOMAIN, data_product, source)
         if dsi in conf.ACCESS_CONTROL_KEYS:
             headers["X-API-Key"] = await get_api_token(dsi)
 
