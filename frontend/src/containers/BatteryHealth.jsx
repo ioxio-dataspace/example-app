@@ -72,7 +72,7 @@ export default function BatteryHealth() {
         </p>
         <p>
           This is mock data generated for demo purposes only. It's fetched automatically
-          from <DataProductLink definition={DEFINITION} />
+          from <DataProductLink definition={DEFINITION} source={SOURCE} />
         </p>
       </div>
     </Box>
