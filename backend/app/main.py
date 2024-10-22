@@ -4,12 +4,15 @@ from typing import Optional
 
 import httpx
 import jwt
+from app.access_control import get_api_token
 from app.consents import router as consents_router
 from app.dataspace_configuration import (
     get_dataspace_configuration,
     get_oidc_provider_url,
+    get_product_gateway_url,
 )
 from app.settings import conf
+from app.utils import make_dsi
 from app.well_known import router as well_known_router
 from authlib.common.urls import add_params_to_uri
 from authlib.integrations.starlette_client import OAuth, OAuthError
@@ -182,8 +185,13 @@ async def fetch_data_product(
         headers["authorization"] = f"Bearer {id_token}"
 
     async with httpx.AsyncClient() as client:
-        dataspace_configuration = await get_dataspace_configuration()
-        product_gateway_url = dataspace_configuration["product_gateway_url"]
+        product_gateway_url = await get_product_gateway_url()
+
+        # If we have an access control key configured for the source, get an API token for the request
+        dsi = make_dsi(conf.DATASPACE_BASE_DOMAIN, data_product, source)
+        if dsi in conf.ACCESS_CONTROL_KEYS:
+            headers["X-API-Key"] = await get_api_token(dsi)
+
         resp = await client.post(
             f"{product_gateway_url}/{data_product}",
             params={"source": source},

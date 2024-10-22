@@ -22,6 +22,8 @@ Main idea is to demonstrate how to:
 - [backend](./backend/) - Python [FastAPI](https://fastapi.tiangolo.com/) backend
   - [main.py](./backend/app/main.py) - All the backend routes, e.g. for authentication
     or data retrieval
+  - [access_control.py](./backend/app/consents.py) - Logic for getting API tokens for
+    sources using Dataspace managed API tokens
   - [consents.py](./backend/app/consents.py) - Code related to requesting data products
     that require a consent
   - [well_known.py](./backend/app/well_known.py) - Party configuration related endpoints
@@ -58,6 +60,15 @@ Before running the app locally, you have to:
    `OIDC_CLIENT_SECRET` variables with the values from the previous step.
 4. Additionally, if you host your own party configuration, then set the corresponding
    key as `PRIVATE_KEY`, set `PRIVATE_KEY_ID` and update `PARTY_CONFIGURATION_DOMAIN`.
+5. If you want to test access control keys, get your access control keys from the
+   [Developer Portal](https://developer.sandbox.ioxio-dataspace.com/) and configure
+   `ACCESS_CONTROL_KEYS` like:
+   ```
+   ACCESS_CONTROL_KEYS={"dpp://.../": "ABC123..."}
+   ```
+   Multiple keys can be set for separate DSIs by separating the pairs with commas. You
+   will also have to set `ACCESS_CONTROL_SUB` to the group your application uses to
+   access the source.
 
 ### Pre-requisites
 

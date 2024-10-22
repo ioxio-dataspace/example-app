@@ -18,7 +18,7 @@ FROM python:3.11-slim as runtime
 ENV \
     PATH="/opt/poetry/bin:$PATH" \
     POETRY_HOME="/opt/poetry" \
-    POETRY_VERSION=1.2.2 \
+    POETRY_VERSION=1.8.2 \
     ZZZ_ENV_LAST_LINE=""
 
 RUN : \
