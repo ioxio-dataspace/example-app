@@ -43,7 +43,7 @@ Before running the app locally, you have to:
 
 1. Create a group in [Developer Portal](https://developer.sandbox.ioxio-dataspace.com/).
    and set party configuration domain to `example-app.demos.ioxio.dev`. Or follow the
-   [guide](https://ioxio.com/guides/how-to-create-a-group#creating-and-hosting-party-configuration)
+   [guide](https://docs.ioxio.dev/guides/managing-groups/#creating-and-hosting-party-configuration)
    to create and host your own.
 2. Register new application in the
    [Developer Portal](https://developer.sandbox.ioxio-dataspace.com/). Use the following
