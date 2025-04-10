@@ -72,7 +72,7 @@ Before running the app locally, you have to:
 
 ### Pre-requisites
 
-- [Python 3.11 or 3.12](https://www.python.org/) - For running the backend
+- [Python 3.11 - 3.13](https://www.python.org/) - For running the backend
 - [Poetry 1.8.2+](https://python-poetry.org/) - Python dependency management tool
 - [Node 18+](https://nodejs.org/en/) - For running the frontend
 - [pnpm 8.15+](https://pnpm.io/) - Node package manager

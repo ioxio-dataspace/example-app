@@ -8,15 +8,17 @@ license = "BSD-3-Clause"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-fastapi = "^0.98.0"
-uvicorn = {version = "^0.22.0", extras = ["standard"]}
-Authlib = "^1.2.1"
-itsdangerous = "^2.1.2"
-httpx = "^0.24.1"
-pyjwt = "^2.7.0"
-pyjwt-key-fetcher = "^0.5.0"
-async-lru = "^2.0.4"
-yarl = "^1.15.5"
+fastapi = "^0.115.12"
+uvicorn = {version = "^0.34.0", extras = ["standard"]}
+Authlib = "^1.5.2"
+itsdangerous = "^2.2.0"
+httpx = "^0.28.1"
+pyjwt = "^2.10.1"
+pyjwt-key-fetcher = "^0.8.0"
+async-lru = "^2.0.5"
+yarl = "^1.19.0"
+pydantic = "^2.11.3"
+pydantic-settings = "^2.8.1"
 
 [tool.poetry.scripts]
 dev = "app.main:main"
