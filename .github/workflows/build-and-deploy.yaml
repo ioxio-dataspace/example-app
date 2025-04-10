@@ -19,6 +19,7 @@ on:
   push:
     branches:
       - "main"
+      - "feature/update-docker"
 
 name: Build and Deploy to Cloud Run
 env:
