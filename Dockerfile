@@ -1,6 +1,6 @@
 # ---- BUILD ENVIRONMENT ----- #
 
-FROM node:18.12-slim as build
+FROM node:22-slim as build
 
 WORKDIR /src/frontend
 
@@ -13,18 +13,18 @@ RUN : \
 
 # ---- RUNTIME ENVIRONMENT ----- #
 
-FROM python:3.11-slim as runtime
+FROM python:3.13-slim as runtime
 
 ENV \
     PATH="/opt/poetry/bin:$PATH" \
     POETRY_HOME="/opt/poetry" \
-    POETRY_VERSION=1.8.2 \
+    POETRY_VERSION=1.8.5 \
     ZZZ_ENV_LAST_LINE=""
 
 RUN : \
     # Install curl
     && apt-get update \
-    && apt-get install -y curl \
+    && apt-get install -y curl gcc \
     # Install and configure poetry
     && curl -sSL https://install.python-poetry.org | python3 - \
     && poetry config virtualenvs.in-project true \

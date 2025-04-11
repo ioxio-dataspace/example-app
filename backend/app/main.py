@@ -1,3 +1,4 @@
+import functools
 from contextlib import asynccontextmanager
 from logging import getLogger
 from typing import Optional
@@ -23,9 +24,13 @@ from httpx import Timeout
 from pyjwt_key_fetcher import AsyncKeyFetcher
 from starlette.middleware.sessions import SessionMiddleware
 
-key_fetcher = AsyncKeyFetcher()
 oauth = OAuth()
 logger = getLogger(__name__)
+
+
+@functools.cache
+def get_key_fetcher() -> AsyncKeyFetcher:
+    return AsyncKeyFetcher()
 
 
 async def register_oauth():
@@ -146,6 +151,7 @@ async def user_profile(id_token: Optional[str] = Cookie(default=None)):
     Return information about the currently authenticated user
     """
     if id_token:
+        key_fetcher = get_key_fetcher()
         key_entry = await key_fetcher.get_key(id_token)
         try:
             token = jwt.decode(

@@ -2,7 +2,7 @@ import secrets
 from typing import Optional, Set
 
 from app.keys import RsaPrivateKey
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
