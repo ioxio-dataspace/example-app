@@ -89,7 +89,7 @@ async def create_consent_request_token(sub) -> str:
     }
     token = jwt.encode(
         payload=crt,
-        key=key.get_secret_value(),
+        key=key.private_key,
         algorithm=key.alg,
         headers=headers,
     )
