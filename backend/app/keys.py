@@ -6,6 +6,7 @@ from hashlib import sha256
 
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey, RSAPublicKey
 from pydantic import SecretStr
 
 
@@ -35,42 +36,44 @@ def unsigned_int_to_urlsafe_b64(i: int) -> str:
 
 
 class RsaPrivateKey(SecretStr):
-    def __init__(self, value: str):
-        super().__init__(textwrap.dedent(value).strip())
+    private_key: RSAPrivateKey
+
+    def __init__(self, value: str) -> None:
+        value = textwrap.dedent(value).strip()
+        super().__init__(value)
+        self.private_key = self._load_and_validate_key(value)
+
+    @staticmethod
+    def _load_and_validate_key(value: str) -> RSAPrivateKey:
+        """
+        Load and validate the RSA private key.
+
+        :return: The RSAPrivateKey object.
+        """
+        key = serialization.load_pem_private_key(
+            value.encode(), password=None, backend=default_backend()
+        )
+        return key
 
     def __repr__(self) -> str:
         return f"RsaPrivateKey('{self}')"
 
-    @classmethod
-    def __get_validators__(cls):
-        yield cls.validate
-        yield cls.check_rsa
-
-    @classmethod
-    def check_rsa(cls, value):
-        serialization.load_pem_private_key(
-            value.get_secret_value().encode(), password=None, backend=default_backend()
-        )
-        return value
+    @property
+    def public_key(self) -> RSAPublicKey:
+        return self.private_key.public_key()
 
     @cached_property
-    def key(self):
-        return serialization.load_pem_private_key(
-            self._secret_value.encode(), password=None, backend=default_backend()
-        )
-
-    @cached_property
-    def n(self):
-        n = self.key.public_key().public_numbers().n
+    def n(self) -> str:
+        n = self.public_key.public_numbers().n
         return unsigned_int_to_urlsafe_b64(n)
 
     @cached_property
-    def e(self):
-        e = self.key.public_key().public_numbers().e
+    def e(self) -> str:
+        e = self.public_key.public_numbers().e
         return unsigned_int_to_urlsafe_b64(e)
 
     @cached_property
-    def thumbprint(self):
+    def kid(self) -> str:
         """
         JSON Web Key (JWK) Thumbprint of the key (see RFC 7638).
         """
@@ -88,30 +91,22 @@ class RsaPrivateKey(SecretStr):
         return urlsafe_b64encode(raw_hash).decode().rstrip("=")
 
     @cached_property
-    def kid(self):
-        from app.settings import conf
-
-        if conf.PRIVATE_KEY_ID:
-            return conf.PRIVATE_KEY_ID
-        return self.thumbprint
-
-    @cached_property
-    def public_pem(self):
-        return self.key.public_key().public_bytes(
+    def public_pem(self) -> bytes:
+        return self.public_key.public_bytes(
             encoding=serialization.Encoding.PEM,
             format=serialization.PublicFormat.SubjectPublicKeyInfo,
         )
 
     @property
-    def alg(self):
+    def alg(self) -> str:
         return "RS256"
 
     @property
-    def kty(self):
+    def kty(self) -> str:
         return "RSA"
 
     @cached_property
-    def jwk(self):
+    def jwk(self) -> dict[str, str]:
         return {
             "kid": self.kid,
             "kty": self.kty,
