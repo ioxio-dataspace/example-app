@@ -22,19 +22,6 @@ async def get_dataspace_configuration():
     return resp.json()
 
 
-async def get_oidc_provider_url() -> str:
-    dataspace_configuration = await get_dataspace_configuration()
-    auth_providers = dataspace_configuration["authentication_providers"]
-    oidc_provider_url = auth_providers["end_user"]["base_url"]
-    return oidc_provider_url
-
-
-async def get_consent_portal_url() -> str:
-    dataspace_configuration = await get_dataspace_configuration()
-    consent_portal_url = dataspace_configuration["consent_providers"][0]["base_url"]
-    return consent_portal_url
-
-
 async def get_product_gateway_url() -> str:
     dataspace_configuration = await get_dataspace_configuration()
     product_gateway_url = dataspace_configuration["product_gateway_url"]
