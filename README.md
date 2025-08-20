@@ -4,7 +4,7 @@ This demo application is designed to show a practical example on how to create a
 application that connects to a Dataspace built with the IOXIO Dataspace technology.
 
 It consists of a simple Python [FastAPI](https://fastapi.tiangolo.com) backend that is
-responsible for authentication and data retrieval and React-based frontend application.
+responsible for data retrieval and a React-based frontend application.
 
 You can try the [online demo](https://example-app.demos.ioxio.dev) or check the
 [configuration](#configuration) section for instructions on how to run this code
@@ -13,20 +13,14 @@ locally.
 Main idea is to demonstrate how to:
 
 - Retrieve data products from Product Gateway
-- Perform authentication in a dataspace
-- Use the authentication tokens for data products
-- Request data products that require consent
+- Retrieve data from data sources that are using Dataspace managed API tokens
 
 ## Repo structure
 
 - [backend](./backend/) - Python [FastAPI](https://fastapi.tiangolo.com/) backend
-  - [main.py](./backend/app/main.py) - All the backend routes, e.g. for authentication
-    or data retrieval
+  - [main.py](./backend/app/main.py) - All the backend routes, e.g. for data retrieval
   - [access_control.py](./backend/app/consents.py) - Logic for getting API tokens for
     sources using Dataspace managed API tokens
-  - [consents.py](./backend/app/consents.py) - Code related to requesting data products
-    that require a consent
-  - [well_known.py](./backend/app/well_known.py) - Party configuration related endpoints
   - [settings.py](./backend/app/settings.py) - Backend configuration
 - [frontend](./frontend) - React application
   - [containers](./frontend/src/containers) - Root containers for handling data products
@@ -39,30 +33,18 @@ Main idea is to demonstrate how to:
 
 ### Configuration
 
-Before running the app locally, you have to:
+No configuration is necessary to get started with testing the app locally. However, if
+you want to also test data retrieval from a data source that requires dataspace managed
+API tokens, you need to:
 
-1. Create a group in [Developer Portal](https://developer.sandbox.ioxio-dataspace.com/).
-   and set party configuration domain to `example-app.demos.ioxio.dev`. Or follow the
-   [guide](https://docs.ioxio.dev/guides/managing-groups/#creating-and-hosting-party-configuration)
-   to create and host your own.
-2. Register new application in the
-   [Developer Portal](https://developer.sandbox.ioxio-dataspace.com/). Use the following
-   values in the form:
-
-   - Redirect URI: `http://localhost:3000/api/auth`
-   - Logout redirect URI: `http://localhost:3000`
-
-   Note: In the next step you will need the Client ID and Client secret that get
-   generated when you complete the registration of the application.
-
+1. Create a group in the
+   [Sandbox Developer Portal](https://developer.sandbox.ioxio-dataspace.com/).
+2. Request that your group gets access to the data source.
 3. Create the [backend/.env](backend/.env) file based on
-   [backend/.env.example](backend/.env.example) and set `OIDC_CLIENT_ID` and
-   `OIDC_CLIENT_SECRET` variables with the values from the previous step.
-4. Additionally, if you host your own party configuration, then set the corresponding
-   key as `PRIVATE_KEY`, set `PRIVATE_KEY_ID` and update `PARTY_CONFIGURATION_DOMAIN`.
-5. If you want to test access control keys, get your access control keys from the
-   [Developer Portal](https://developer.sandbox.ioxio-dataspace.com/) and configure
-   `ACCESS_CONTROL_KEYS` like:
+   [backend/.env.example](backend/.env.example).
+4. Get your access control keys from the
+   [Sandbox Developer Portal](https://developer.sandbox.ioxio-dataspace.com/) and
+   configure `ACCESS_CONTROL_KEYS` like:
    ```
    ACCESS_CONTROL_KEYS={"dpp://.../": "ABC123..."}
    ```
