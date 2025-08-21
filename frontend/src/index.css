@@ -59,21 +59,6 @@ body,
   padding: 1rem;
 }
 
-.login-form {
-  display: flex;
-  flex-direction: column;
-  max-width: 25rem;
-  gap: 1rem;
-  align-items: center;
-  margin: 0 auto;
-}
-
-.user-navbar {
-  display: flex;
-  justify-content: space-between;
-  padding-bottom: 1rem;
-}
-
 .current-weather .main-box {
   display: grid;
   grid-template-columns: auto auto;

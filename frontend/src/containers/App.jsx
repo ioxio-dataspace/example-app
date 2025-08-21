@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react"
 import Navbar from "../components/Navbar"
 import CurrentWeather from "./CurrentWeather"
-import PersonDetails from "./PersonDetails"
-import BeneficialOwners from "./BeneficialOwners"
 import BatteryHealth from "./BatteryHealth"
 import { getDataspaceConfiguration } from "../utils.js"
 import DataspaceConfigurationContext from "../context/dataspaceConfigurationContext"
@@ -10,7 +8,6 @@ import DataspaceConfigurationContext from "../context/dataspaceConfigurationCont
 function App() {
   const [dataspaceConfiguration, setDataspaceConfiguration] = useState({
     dataspaceBaseUrl: "https://sandbox.ioxio-dataspace.com",
-    consentPortalUrl: "https://consent.sandbox.ioxio-dataspace.com",
     definitionViewerUrl: "https://definitions.sandbox.ioxio-dataspace.com",
     dataspaceName: "IOXIO Sandbox Dataspace",
   })
@@ -27,8 +24,6 @@ function App() {
       <div className="app">
         <Navbar />
         <CurrentWeather />
-        <PersonDetails />
-        <BeneficialOwners />
         <BatteryHealth />
       </div>
     </DataspaceConfigurationContext.Provider>

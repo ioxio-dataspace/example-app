@@ -29,7 +29,6 @@ export default function BatteryHealth() {
             product: PRODUCT,
             id: ID,
           },
-          false,
           SOURCE
         )
         if (resp.ok) {

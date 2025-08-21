@@ -8,18 +8,13 @@ license = "BSD-3-Clause"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-fastapi = "^0.115.14"
+fastapi = "^0.116.1"
 uvicorn = {version = "^0.35.0", extras = ["standard"]}
-Authlib = "^1.6.0"
-itsdangerous = "^2.2.0"
 httpx = "^0.28.1"
-pyjwt = "^2.10.1"
-pyjwt-key-fetcher = "^0.8.0"
 async-lru = "^2.0.5"
 yarl = "^1.20.1"
 pydantic = "^2.11.7"
 pydantic-settings = "^2.10.1"
-cryptography = "^45.0.4"
 
 [tool.poetry.scripts]
 dev = "app.main:main"
