@@ -13,33 +13,33 @@ locally.
 Main idea is to demonstrate how to:
 
 - Retrieve data products from Product Gateway
-- Retrieve data from data sources that are using Dataspace managed API tokens
+- Retrieve data from data sources that are using Dataspace verified API tokens
 
 ## Repo structure
 
 - [backend](./backend/) - Python [FastAPI](https://fastapi.tiangolo.com/) backend
   - [main.py](./backend/app/main.py) - All the backend routes, e.g. for data retrieval
-  - [access_control.py](./backend/app/consents.py) - Logic for getting API tokens for
-    sources using Dataspace managed API tokens
+  - [access_control.py](./backend/app/access_control.py) - Logic for getting API tokens
+    for sources using Dataspace verified API tokens
   - [settings.py](./backend/app/settings.py) - Backend configuration
 - [frontend](./frontend) - React application
   - [containers](./frontend/src/containers) - Root containers for handling data products
   - [components](./frontend/src/components) - Stateless components to simplify following
     the containers' logic
-  - [utils](./frontend/src/utils) - Some helpers, e.g. for making network requests to
-    the backend
+  - [utils.js](./frontend/src/utils.js) - Some helpers, e.g. for making network requests
+    to the backend
 
 ## Local installation
 
 ### Configuration
 
 No configuration is necessary to get started with testing the app locally. However, if
-you want to also test data retrieval from a data source that requires dataspace managed
+you want to also test data retrieval from a data source that requires dataspace verified
 API tokens, you need to:
 
 1. Create a group in the
    [Sandbox Developer Portal](https://developer.sandbox.ioxio-dataspace.com/).
-2. Request that your group gets access to the data source.
+2. Request that your group gets access to the data source or use your own data source.
 3. Create the [backend/.env](backend/.env) file based on
    [backend/.env.example](backend/.env.example).
 4. Get your access control keys from the
